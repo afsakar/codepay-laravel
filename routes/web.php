@@ -21,12 +21,15 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('dashboard');
-    
+
     Route::get('/dashboard', function () {
         return view('welcome');
     })->name('dashboard');
-    
-    Route::get('/accounts', AccountList::class)->name('accounts');
+
     Route::get('/translations', ["Barryvdh\TranslationManager\Controller::class", "getIndex"])->name('translations');
+
+    Route::group(['prefix' => 'accounts'], function (){
+        Route::get('/', AccountList::class)->name('accounts');
+    });
 
 });

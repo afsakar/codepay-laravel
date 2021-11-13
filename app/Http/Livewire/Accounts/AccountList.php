@@ -3,8 +3,10 @@
 namespace App\Http\Livewire\Accounts;
 
 use App\Exports\AccountsExport;
+use App\Models\Currency;
 use Carbon\Carbon;
 use App\Models\Account;
+use App\Models\AccountType;
 use Livewire\Component;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithBulkActions;
@@ -18,11 +20,14 @@ class AccountList extends Component
     use WithPerPagePagination, WithSorting, WithBulkActions, LivewireAlert, WithCachedRows;
 
     public $search = "";
-    public $editingModal = false;
+    public Account $editing;
+    public $accountTypes;
+    public $currencies;
     public $createMode = false;
     public $deleteModal = false;
     public $singleDelete = false;
-    public Account $editing;
+    public $editingModal = false;
+    public $currencyPosition = "after";
 
     protected $listeners = [
         'save',
@@ -41,23 +46,44 @@ class AccountList extends Component
         'date-max' => null,
     ];
 
-    protected $rules = [
-        'editing.name' => 'required|min:3',
-        'editing.description' => 'required|min:3',
-        'editing.balance' => 'required|numeric',
-        'editing.status' => 'required',
-        'editing.currency' => 'required',
-        'editing.currency_status' => 'required',
-    ];
+    public function rules()
+    {
+        return [
+            'editing.name' => 'required|min:3|unique:accounts,name,'.$this->editing->id,
+            'editing.account_type_id' => 'required',
+            'editing.owner' => 'nullable',
+            'editing.description' => 'required|min:3',
+            'editing.balance' => 'required|numeric',
+            'editing.status' => 'required',
+            'editing.currency_id' => 'required',
+            'editing.currency_status' => 'required',
+        ];
+    }
+
+    public function validationAttributes()
+    {
+        return [
+            'editing.name' => __('Account Name'),
+            'editing.account_type_id' => __('Account Type'),
+            'editing.owner' => __('Account Owner'),
+            'editing.description' => __('Account Description'),
+            'editing.balance' => __('Account Balance'),
+            'editing.status' => __('Account Status'),
+            'editing.currency_id' => __('Account Currency'),
+            'editing.currency_status' => __('Currency Status'),
+        ];
+    }
 
     public function mount()
     {
         $this->editing = $this->makeBlankAccount();
+        $this->accountTypes = AccountType::where('status', 'active')->get();
+        $this->currencies = Currency::where('status', 'active')->get();
     }
 
     public function makeBlankAccount()
     {
-        return Account::make(['status' => 'active', 'currency' => 'TL', 'currency_status' => 'after']);
+        return Account::make(['status' => 'active', 'currency_id' => 1, 'currency_status' => $this->currencyPosition]);
     }
 
     /* Editing / Creating / Deleting / Exporting */
@@ -66,13 +92,12 @@ class AccountList extends Component
         $this->useCachedRows();
         if($this->editing->isNot($account)) $this->editing = $account;
         $this->editingModal = true;
+        $this->currencyPosition = $this->editing['currency_status'];
     }
 
     public function create()
     {
-
         $this->useCachedRows();
-
         $this->createMode = true;
         if($this->editing->getKey()) $this->editing = $this->makeBlankAccount();
         $this->editingModal = true;
@@ -84,9 +109,9 @@ class AccountList extends Component
         $this->editing->save();
         if($this->createMode) {
             $this->createMode = false;
-            $this->dispatchBrowserEvent('notify', 'Record has been created successfuly!');
+            $this->dispatchBrowserEvent('notify', 'Record has been created successfully!');
         }else{
-            $this->dispatchBrowserEvent('notify', 'Record has been updated successfuly!');
+            $this->dispatchBrowserEvent('notify', 'Record has been updated successfully!');
         }
         $this->editingModal = false;
     }
@@ -95,24 +120,13 @@ class AccountList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
+        $this->currencyPosition = "after";
         $this->resetValidation();
     }
 
-    public function deleteSelected()
+    public function exportPdf()
     {
-        $this->selectedRowsQuery->delete();
-        $this->dispatchBrowserEvent('notify', 'Selected Accounts deleted successfuly!');
-        $this->deleteModal = false;
-        $this->selectAll = false;
-        $this->selectPage = false;
-    }
-
-    public function deleteSingle(Account $account)
-    {
-        $this->editing = $account;
-        $this->editing->delete();
-        $this->dispatchBrowserEvent('notify', 'Account deleted successfuly!');
-        $this->singleDelete = false;
+        return (new AccountsExport($this->selected))->download('accounts-list.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
 
     public function exportExcel()
@@ -120,9 +134,18 @@ class AccountList extends Component
         return Excel::download(new AccountsExport($this->selected), 'accounts-list.xlsx');
     }
 
-    public function exportPdf()
+    public function deleteSelected()
     {
-        return (new AccountsExport($this->selected))->download('accounts-list.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+        $this->selectedRowsQuery->delete();
+        $this->dispatchBrowserEvent('notify', 'Selected Accounts deleted successfully!');
+        $this->deleteModal = false;
+        $this->selectAll = false;
+        $this->selectPage = false;
+    }
+
+    public function changeCurrencyPosition($currency)
+    {
+        $this->currencyPosition = $currency;
     }
     /* Editing / Creating / Deleting / Exporting */
 
@@ -131,9 +154,9 @@ class AccountList extends Component
         $this->useCachedRows();
     }
 
-    public function resetFilters() 
-    { 
-        $this->reset('filters'); 
+    public function resetFilters()
+    {
+        $this->reset('filters');
     }
 
     public function updatedFilters()
@@ -149,9 +172,7 @@ class AccountList extends Component
             ->when($this->filters['balance-max'], fn($query, $balance) => $query->where('balance', '<=', $balance))
             ->when($this->filters['date-min'], fn($query, $created_at) => $query->where('created_at', '>=', Carbon::parse($created_at)))
             ->when($this->filters['date-max'], fn($query, $created_at) => $query->where('created_at', '<=', Carbon::parse($created_at)))
-            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
-
-
+            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')->orWhere('owner', 'like', '%'.$search.'%'));
             return $this->applySorting($query);
     }
 

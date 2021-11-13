@@ -1,19 +1,13 @@
 <div>
     @if ($paginator->hasPages())
         @php(isset($this->numberOfPaginatorsRendered[$paginator->getPageName()]) ? $this->numberOfPaginatorsRendered[$paginator->getPageName()]++ : $this->numberOfPaginatorsRendered[$paginator->getPageName()] = 1)
-        <div class="px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 rounded-lg mt-4 dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-700">  
+        <div class="px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 rounded-lg mt-4 dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-700">
             <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between">
 
                 <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between">
                     <div>
                         <p class="text-sm text-gray-700 leading-5 dark:text-gray-400">
-                            <span>{!! __('Showing') !!}</span>
-                            <span class="font-medium">{{ $paginator->firstItem() }}</span>
-                            <span>{!! __('to') !!}</span>
-                            <span class="font-medium">{{ $paginator->lastItem() }}</span>
-                            <span>{!! __('of') !!}</span>
-                            <span class="font-medium">{{ $paginator->total() }}</span>
-                            <span>{!! __('results') !!}</span>
+                            <span>{!! __('Showing :firstItem to :lastItem of :totalItem results', ['firstItem' => $paginator->firstItem(), 'lastItem' => $paginator->lastItem(), 'totalItem' => $paginator->total()]) !!}</span>
                         </p>
                     </div>
 

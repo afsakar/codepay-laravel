@@ -15,7 +15,7 @@
 
 </head>
 <body>
-    
+
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }" >
 
       <!-- Desktop sidebar -->
@@ -39,5 +39,6 @@
     @include('layouts.includes.script')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <x-livewire-alert::scripts />
+    <script src="https://unpkg.com/@themesberg/flowbite@1.1.1/dist/flowbite.bundle.js"></script>
 </body>
 </html>

@@ -15,12 +15,16 @@ class CreateAccountsTable extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('account_type_id');
+            $table->string('name')->unique();
+            $table->string('owner')->nullable();
             $table->string('description')->nullable();
             $table->decimal('balance', 9, 3)->default(0);
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->string('currency')->default("TL");
+            $table->unsignedBigInteger('currency_id');
             $table->enum('currency_status', ['after', 'before'])->default('after');
+            $table->foreign('account_type_id')->references('id')->on('account_types')->onDelete(null);
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete(null);
             $table->timestamps();
         });
     }

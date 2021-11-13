@@ -53,9 +53,9 @@
                         <div class="md:w-1/2 pr-2 space-y-4">
                             <x-input.group inline for="filter-status" label="Status">
                                 <x-input.select id="filter-status" wire:model="filters.status">
-                                    <option value="" disabled>Select Status...</option>
+                                    <option value="" disabled>{{ __('Select Status...') }}</option>
                                     @foreach (App\Models\Account::STATUS as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
+                                        <option value="{{ $key }}">{{ __($value) }}</option>
                                     @endforeach
                                 </x-input.select>
                             </x-input.group>
@@ -106,28 +106,30 @@
                         <x-table.column class="pr-0 w-8">
                             <x-input.checkbox wire:model="selectPage" />
                         </x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">Name</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['description'] ?? null" wire:click="sortBy('description')">Description</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['balance'] ?? null" wire:click="sortBy('balance')">Balance</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">Status</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">Created At</x-table.column>
-                        <x-table.column>Actions</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['owner'] ?? null" wire:click="sortBy('owner')">{{ __('Owner') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['description'] ?? null" wire:click="sortBy('description')">{{ __('Description') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['account_type_id'] ?? null" wire:click="sortBy('account_type_id')">{{ __('Account Type') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['balance'] ?? null" wire:click="sortBy('balance')">{{ __('Balance') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
+                        <x-table.column>{{ __('Actions') }}</x-table.column>
                     </x-table.row>
                 </x-slot>
                 <x-slot name="body">
                     @if($selectPage)
                     <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
-                        <x-table.cell colspan="7">
+                        <x-table.cell colspan="9">
                             @unless ($selectAll)
                                 <div>
                                     <span>
-                                        You have selected <strong>{{ $accounts->count() }}</strong> items. Do you want to select all <strong>{{ $accounts->total() }}</strong> items?
+                                        {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $accounts->count(), 'totalCount' => $accounts->total()]) !!}
                                     </span>
-                                    <button wire:click="selectAll" class="text-blue-600 ml-1">Select All</button>
+                                    <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
                                 </div>
                             @else
                             <span>
-                                You are currently selecting all <strong>{{ $accounts->total() }}</strong> items.
+                                {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $accounts->total()]) !!}
                             </span>
                             @endif
                         </x-table.cell>
@@ -142,7 +144,13 @@
                             {{ $account->name }}
                         </x-table.cell>
                         <x-table.cell>
+                            {{ $account->owner }}
+                        </x-table.cell>
+                        <x-table.cell>
                             {{ $account->description }}
+                        </x-table.cell>
+                        <x-table.cell>
+                            {{ $account->account_type->name }}
                         </x-table.cell>
                         <x-table.cell>
                             {{ $account->balance_with_currency }}
@@ -160,14 +168,11 @@
                                 <x-button wire:click="edit({{ $account->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                     <x-heroicon-o-pencil class="h-5 w-5" />
                                 </x-button>
-                                <x-button wire:click="$toggle('singleDelete', true)" aria-label="Delete" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
-                                    <x-heroicon-o-trash class="h-5 w-5" />
-                                </x-button>
                             </div>
                         </x-table.cell>
                     </x-table.row>
                     @empty
-                    <x-table.cell colspan="7" class="dark:text-gray-400 dark:text-gray-400 dark:bg-gray-700">
+                    <x-table.cell colspan="9" class="dark:text-gray-400 dark:bg-gray-700">
                         <div class="flex items-center justify-center text-gray-400">
                          <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
                         </div>
@@ -194,7 +199,17 @@
                 <x-input.group inline for="name" :label="__('Account Name')" :error="$errors->first('editing.name')">
                     <x-input.text wire:model.defer="editing.name" id="name" />
                 </x-input.group>
-                <x-input.group inline for="description" :label="__('Account description')" :error="$errors->first('editing.description')">
+                <x-input.group inline for="owner" :label="__('Account Owner')" :error="$errors->first('editing.owner')">
+                    <x-input.text wire:model.defer="editing.owner" id="owner" />
+                </x-input.group>
+                <x-input.group inline for="filter-account-type" :label="__('Account Type')">
+                    <x-input.select id="filter-account-type" wire:model.defer="editing.account_type_id">
+                        @foreach ($this->accountTypes as $type)
+                            <option value="{{ $type->id }}">{{ __($type->name) }}</option>
+                        @endforeach
+                    </x-input.select>
+                </x-input.group>
+                <x-input.group inline for="description" :label="__('Account Description')" :error="$errors->first('editing.description')">
                     <x-input.textarea wire:model.defer="editing.description" id="description" />
                 </x-input.group>
                 <x-input.group inline for="filter-status" :label="__('Status')">
@@ -206,16 +221,20 @@
                     </x-input.select>
                 </x-input.group>
                 <x-input.group inline for="currency" :label="__('Account Currency')" :error="$errors->first('editing.currency')">
-                    <x-input.text wire:model.defer="editing.currency" id="currency" />
+                    <x-input.select id="currency" wire:model.defer="editing.currency_id">
+                        @foreach ($this->currencies as $currency)
+                            <option value="{{ $currency->id }}">{{ __($currency->name)." [".$currency->symbol."]" }}</option>
+                        @endforeach
+                    </x-input.select>
                 </x-input.group>
                 <x-input.group inline for="currency-status" :label="__('Currency Status')">
-                    <x-input.select id="currency-status" wire:model.defer="editing.currency_status">
+                    <x-input.select wire:click="changeCurrencyPosition($event.target.value)" id="currency-status" wire:model.defer="editing.currency_status">
                         <option value="after">{{ __('After') }}</option>
                         <option value="before">{{ __('Before') }}</option>
                     </x-input.select>
                 </x-input.group>
                 <x-input.group inline for="balance" :label="__('Account Balance')" :error="$errors->first('editing.balance')">
-                    <x-input.text wire:model.defer="editing.balance" id="balance" />
+                    <x-input.money wire:model.defer="editing.balance" id="balance" :currency="$editing['currency']['symbol']" :position="$currencyPosition" />
                 </x-input.group>
             </x-slot>
 
@@ -243,28 +262,6 @@
 
             <x-slot name="footer">
                 <x-button type="button" wire:click="$set('deleteModal', false)" class="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm font-medium leading-5">
-                    {{ __('Cancel') }}
-                </x-button>
-                <x-button type="submit" class="text-white bg-red-700 rounded-lg px-3 py-1 text-sm font-medium leading-5" wire:loading.attr="disabled">
-                    {{ __('Delete') }}
-                </x-button>
-            </x-slot>
-        </x-jet-confirmation-modal>
-    </form>
-
-    {{-- Single Delete Modal --}}
-    <form wire:submit.prevent="deleteSingle({{$account->id}})">
-        <x-jet-confirmation-modal wire:model.defer="singleDelete">
-            <x-slot name="title">
-
-            </x-slot>
-
-            <x-slot name="content">
-                {{ __('Are you sure you want to delete row? This action is irreversible!') }}
-            </x-slot>
-
-            <x-slot name="footer">
-                <x-button type="button" wire:click="$set('singleDelete', false)" class="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm font-medium leading-5">
                     {{ __('Cancel') }}
                 </x-button>
                 <x-button type="submit" class="text-white bg-red-700 rounded-lg px-3 py-1 text-sm font-medium leading-5" wire:loading.attr="disabled">
