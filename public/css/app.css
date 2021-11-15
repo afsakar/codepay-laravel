@@ -1406,6 +1406,9 @@ select {
 .max-h-xl {
 	max-height: 36rem;
 }
+.max-h-60 {
+	max-height: 15rem;
+}
 .min-h-screen {
 	min-height: 100vh;
 }
@@ -1481,6 +1484,9 @@ select {
 .max-w-sm {
 	max-width: 24rem;
 }
+.max-w-xs {
+	max-width: 20rem;
+}
 .flex-1 {
 	flex: 1 1 0%;
 }
@@ -1542,6 +1548,12 @@ select {
 .cursor-pointer {
 	cursor: pointer;
 }
+.select-none {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+}
 .list-inside {
 	list-style-position: inside;
 }
@@ -1576,9 +1588,6 @@ select {
 }
 .items-center {
 	align-items: center;
-}
-.justify-start {
-	justify-content: flex-start;
 }
 .justify-end {
 	justify-content: flex-end;
@@ -1647,6 +1656,9 @@ select {
 	--tw-divide-y-reverse: 0;
 	border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
 	border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+}
+.overflow-auto {
+	overflow: auto;
 }
 .overflow-hidden {
 	overflow: hidden;
@@ -1847,16 +1859,12 @@ select {
 	--tw-bg-opacity: 1;
 	background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
 }
-.bg-gray-300 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(213, 214, 215, var(--tw-bg-opacity));
-}
 .bg-transparent {
 	background-color: transparent;
 }
-.bg-gray-400 {
+.bg-gray-300 {
 	--tw-bg-opacity: 1;
-	background-color: rgba(158, 158, 158, var(--tw-bg-opacity));
+	background-color: rgba(213, 214, 215, var(--tw-bg-opacity));
 }
 .bg-opacity-25 {
 	--tw-bg-opacity: 0.25;
@@ -2023,6 +2031,9 @@ select {
 .pr-10 {
 	padding-right: 2.5rem;
 }
+.pr-9 {
+	padding-right: 2.25rem;
+}
 .text-left {
 	text-align: left;
 }
@@ -2070,6 +2081,9 @@ select {
 }
 .font-bold {
 	font-weight: 700;
+}
+.font-normal {
+	font-weight: 400;
 }
 .uppercase {
 	text-transform: uppercase;
@@ -2392,10 +2406,6 @@ select {
 	--tw-text-opacity: 1;
 	color: rgba(18, 19, 23, var(--tw-text-opacity));
 }
-.hover\:text-gray-600:hover {
-	--tw-text-opacity: 1;
-	color: rgba(76, 79, 82, var(--tw-text-opacity));
-}
 .focus\:z-10:focus {
 	z-index: 10;
 }
@@ -2493,6 +2503,10 @@ select {
 .focus\:placeholder-gray-500:focus::placeholder {
 	--tw-placeholder-opacity: 1;
 	color: rgba(112, 114, 117, var(--tw-placeholder-opacity));
+}
+.focus\:shadow-none:focus {
+	--tw-shadow: 0 0 #0000;
+	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .focus\:outline-none:focus {
 	outline: 2px solid transparent;
@@ -2891,10 +2905,6 @@ select {
 
 	.md\:w-1\/2 {
 		width: 50%;
-	}
-
-	.md\:w-1 {
-		width: 0.25rem;
 	}
 
 	.md\:grid-cols-3 {

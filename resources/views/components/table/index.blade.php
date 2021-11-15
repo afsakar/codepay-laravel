@@ -5,9 +5,9 @@
                 {{ $head }}
             </thead>
             <tbody class="divide-y border-t dark:divide-gray-600 dark:bg-gray-700">
-        
-                {{ $body }}
-        
+
+                {{ $slot }}
+
             </tbody>
         </table>
     </div>

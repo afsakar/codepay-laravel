@@ -38,7 +38,7 @@
         </div>
     </h4>
 
-    <div class="w-full overflow-hidden">
+    <div class="w-full">
         {{-- Filters --}}
         <div>
             <div x-show="showFilters"
@@ -116,69 +116,67 @@
                         <x-table.column>{{ __('Actions') }}</x-table.column>
                     </x-table.row>
                 </x-slot>
-                <x-slot name="body">
-                    @if($selectPage)
-                    <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
-                        <x-table.cell colspan="9">
-                            @unless ($selectAll)
-                                <div>
-                                    <span>
-                                        {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $accounts->count(), 'totalCount' => $accounts->total()]) !!}
-                                    </span>
-                                    <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
-                                </div>
-                            @else
-                            <span>
-                                {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $accounts->total()]) !!}
-                            </span>
-                            @endif
-                        </x-table.cell>
-                    </x-table.row>
-                    @endif
-                    @forelse ($accounts as $account)
-                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $account->id }}">
-                        <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $account->id }}" />
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $account->name }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $account->owner }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $account->description }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $account->account_type->name }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $account->balance_with_currency }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            <x-badge :color="$account->status_color">
-                                {{ __(App\Models\Account::STATUS[$account->status]) }}
-                            </x-badge>
-                        </x-table.cell>
-                        <x-table.cell title="{{ $account->created_at }}">
-                            {{ $account->created_at->diffForHumans() }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            <div class="flex items-center space-x-4 text-sm">
-                                <x-button wire:click="edit({{ $account->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
-                                    <x-heroicon-o-pencil class="h-5 w-5" />
-                                </x-button>
+                @if($selectPage)
+                <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
+                    <x-table.cell colspan="9">
+                        @unless ($selectAll)
+                            <div>
+                                <span>
+                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $accounts->count(), 'totalCount' => $accounts->total()]) !!}
+                                </span>
+                                <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
                             </div>
-                        </x-table.cell>
-                    </x-table.row>
-                    @empty
-                    <x-table.cell colspan="9" class="dark:text-gray-400 dark:bg-gray-700">
-                        <div class="flex items-center justify-center text-gray-400">
-                         <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
+                        @else
+                        <span>
+                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $accounts->total()]) !!}
+                        </span>
+                        @endif
+                    </x-table.cell>
+                </x-table.row>
+                @endif
+                @forelse ($accounts as $account)
+                <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $account->id }}">
+                    <x-table.cell class="pr-0">
+                        <x-input.checkbox wire:model="selected" value="{{ $account->id }}" />
+                    </x-table.cell>
+                    <x-table.cell>
+                        {{ $account->name }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        {{ $account->owner }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        {{ $account->description }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        {{ $account->account_type->name }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        {{ $account->balance_with_currency }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        <x-badge :color="$account->status_color">
+                            {{ __(App\Models\Account::STATUS[$account->status]) }}
+                        </x-badge>
+                    </x-table.cell>
+                    <x-table.cell title="{{ $account->created_at }}">
+                        {{ $account->created_at->diffForHumans() }}
+                    </x-table.cell>
+                    <x-table.cell>
+                        <div class="flex items-center space-x-4 text-sm">
+                            <x-button wire:click="edit({{ $account->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
+                                <x-heroicon-o-pencil class="h-5 w-5" />
+                            </x-button>
                         </div>
                     </x-table.cell>
-                    @endforelse
-                </x-slot>
+                </x-table.row>
+                @empty
+                <x-table.cell colspan="9" class="dark:text-gray-400 dark:bg-gray-700">
+                    <div class="flex items-center justify-center text-gray-400">
+                     <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
+                    </div>
+                </x-table.cell>
+                @endforelse
             </x-table>
             {{ $accounts->links() }}
         </x-card>

@@ -31,8 +31,6 @@ class AccountList extends Component
 
     protected $listeners = [
         'save',
-        'deleteAlert',
-        'deleteSingle',
     ];
 
     protected $queryString = [];
@@ -120,7 +118,7 @@ class AccountList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->currencyPosition = "after";
+        $this->makeBlankAccount();
         $this->resetValidation();
     }
 
@@ -137,10 +135,11 @@ class AccountList extends Component
     public function deleteSelected()
     {
         $this->selectedRowsQuery->delete();
-        $this->dispatchBrowserEvent('notify', 'Selected Accounts deleted successfully!');
+        $this->dispatchBrowserEvent('notify', 'Selected items deleted successfully!');
         $this->deleteModal = false;
         $this->selectAll = false;
         $this->selectPage = false;
+        $this->selected = [];
     }
 
     public function changeCurrencyPosition($currency)

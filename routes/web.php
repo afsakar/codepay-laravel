@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Livewire\Accounts\AccountList;
+use App\Http\Livewire\Accounts\AccountTypeList;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     Route::group(['prefix' => 'accounts'], function (){
         Route::get('/', AccountList::class)->name('accounts');
+        Route::get('/types', AccountTypeList::class)->name('accounts.types');
     });
 
 });
