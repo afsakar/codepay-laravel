@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -29,24 +30,11 @@ class AppServiceProvider extends ServiceProvider
             return $string ? $this->where($field, 'LIKE', '%'. $string . '%') : $this;
         });
 
-        Builder::macro('toCsv', function () {
-            $results = $this->get();
-
-            if ($results->count() < 1) return;
-
-            $titles = implode(',', array_keys((array) $results->first()->getAttributes()));
-
-            $values = $results->map(function ($result) {
-                return implode(',', collect($result->getAttributes())->map(function ($thing) {
-                    return '"'.$thing.'"';
-                })->toArray());
-            });
-
-            $values->prepend($titles);
-
-            return $values->implode("\n");
-        });
-
         Schema::defaultStringLength(191);
+
+        Blade::if('permission', function ($permission) {
+            $permission = explode('.', $permission);
+            return permission_check($permission[0], $permission[1]);
+        });
     }
 }

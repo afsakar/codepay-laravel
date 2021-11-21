@@ -3,6 +3,7 @@
 use App\Http\Livewire\Accounts\AccountList;
 use App\Http\Livewire\Accounts\AccountTypeList;
 use App\Http\Controllers\MainController;
+use App\Http\Livewire\Roles\RoleList;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,11 +28,15 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         return view('welcome');
     })->name('dashboard');
 
-    Route::get('/translations', ["Barryvdh\TranslationManager\Controller::class", "getIndex"])->name('translations');
+    Route::group(['prefix' => 'user-management', 'middleware' => ['PermissionCheck:user-management,show']], function (){
+        Route::get('/roles', RoleList::class)->middleware('PermissionCheck:roles,show')->name('roles');
+    });
+
+    Route::get('/translations', ["Barryvdh\TranslationManager\Controller::class", "getIndex"])->middleware('PermissionCheck:translations,show')->name('translations');
 
     Route::group(['prefix' => 'accounts'], function (){
-        Route::get('/', AccountList::class)->name('accounts');
-        Route::get('/types', AccountTypeList::class)->name('accounts.types');
+        Route::get('/', AccountList::class)->middleware('PermissionCheck:accounts,show')->name('accounts');
+        Route::get('/types', AccountTypeList::class)->middleware('PermissionCheck:account_types,show')->name('accounts.types');
     });
 
 });

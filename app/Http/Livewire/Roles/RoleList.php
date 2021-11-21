@@ -1,64 +1,65 @@
 <?php
 
-namespace App\Http\Livewire\Accounts;
+namespace App\Http\Livewire\Roles;
 
-use App\Http\Livewire\DataTable\WithBulkActions;
-use App\Http\Livewire\DataTable\WithCachedRows;
-use App\Http\Livewire\DataTable\WithPerPagePagination;
-use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithToastNotification;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
-use App\Models\AccountType;
+use App\Models\Role;
 use Livewire\Component;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 
-class AccountTypeList extends Component
+class RoleList extends Component
 {
-    use WithPerPagePagination, WithSorting, WithBulkActions, LivewireAlert, WithCachedRows, WithToastNotification;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
 
     public $search = "";
-    public AccountType $editing;
+    public Role $editing;
     public $createMode = false;
     public $deleteModal = false;
     public $editingModal = false;
+    public $permissions = [];
 
     protected $queryString = [];
 
     public $filters = [
         'search' => "",
-        'status' => "",
     ];
 
     public function rules()
     {
         return [
-            'editing.name' => 'required|min:3|unique:account_types,name,'.$this->editing->id,
-            'editing.status' => 'required',
+            'editing.name' => 'required|min:3|unique:roles,name,'.$this->editing->id,
+            'editing.description' => 'nullable',
+            'permissions.*' => 'nullable',
         ];
     }
 
     public function validationAttributes()
     {
         return [
-            'editing.name' => __('Account Type Name'),
-            'editing.status' => __('Status'),
+            'editing.name' => __('Role Name'),
+            'editing.description' => __('Description'),
         ];
     }
 
     public function mount()
     {
-        $this->editing = $this->makeBlankAccountType();
+        $this->editing = $this->makeBlankRole();
     }
 
-    public function makeBlankAccountType()
+    public function makeBlankRole()
     {
-        return AccountType::make(['status' => 'active']);
+        return Role::make();
     }
 
     /* Editing / Creating / Deleting / Exporting */
-    public function edit(AccountType $type)
+    public function edit(Role $role)
     {
         $this->useCachedRows();
-        if($this->editing->isNot($type)) $this->editing = $type;
+        if($this->editing->isNot($role)) $this->editing = $role;
+        $this->permissions = $role->perms;
         $this->editingModal = true;
     }
 
@@ -66,18 +67,25 @@ class AccountTypeList extends Component
     {
         $this->useCachedRows();
         $this->createMode = true;
-        if($this->editing->getKey()) $this->editing = $this->makeBlankAccountType();
+        if($this->editing->getKey()) $this->editing = $this->makeBlankRole();
+        $this->permissions = [];
         $this->editingModal = true;
     }
 
     public function save()
     {
-        $this->validate();
-        $this->editing->save();
+        $data = [
+            'name' => $this->editing->name,
+            'description' => $this->editing->description,
+            'permissions' => json_encode($this->permissions),
+        ];
+
         if($this->createMode) {
             $this->createMode = false;
+            Role::create($data);
             $this->notify('Record has been created successfully!');
         }else{
+            Role::where('id', $this->editing->id)->update($data);
             $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
@@ -87,7 +95,7 @@ class AccountTypeList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->makeBlankAccountType();
+        $this->makeBlankRole();
         $this->resetValidation();
     }
 
@@ -124,8 +132,7 @@ class AccountTypeList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = AccountType::query()
-            ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
+        $query = Role::query()
             ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
         return $this->applySorting($query);
     }
@@ -139,8 +146,8 @@ class AccountTypeList extends Component
 
     public function render()
     {
-        return view('livewire.accounts.account-type-list', [
-            'types' => $this->rows
+        return view('livewire.roles.role-list', [
+            'roles' => $this->rows
         ]);
     }
 }

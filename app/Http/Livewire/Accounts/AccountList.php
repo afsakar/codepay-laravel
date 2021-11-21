@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Accounts;
 
 use App\Exports\AccountsExport;
+use App\Http\Livewire\DataTable\WithToastNotification;
 use App\Models\Currency;
 use Carbon\Carbon;
 use App\Models\Account;
@@ -17,7 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AccountList extends Component
 {
-    use WithPerPagePagination, WithSorting, WithBulkActions, LivewireAlert, WithCachedRows;
+    use WithPerPagePagination, WithSorting, WithBulkActions, LivewireAlert, WithCachedRows, WithToastNotification;
 
     public $search = "";
     public Account $editing;
@@ -107,9 +108,9 @@ class AccountList extends Component
         $this->editing->save();
         if($this->createMode) {
             $this->createMode = false;
-            $this->dispatchBrowserEvent('notify', 'Record has been created successfully!');
+            $this->notify('Record has been created successfully!');
         }else{
-            $this->dispatchBrowserEvent('notify', 'Record has been updated successfully!');
+            $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
     }
@@ -134,8 +135,12 @@ class AccountList extends Component
 
     public function deleteSelected()
     {
-        $this->selectedRowsQuery->delete();
-        $this->dispatchBrowserEvent('notify', 'Selected items deleted successfully!');
+        try {
+            $this->selectedRowsQuery->delete();
+            $this->notify('Selected records have been deleted successfully!');
+        }catch (\Exception $e) {
+            $this->notify('You can\'t delete '. $this->editing->name .', because it is being used by other items!', 'error');
+        }
         $this->deleteModal = false;
         $this->selectAll = false;
         $this->selectPage = false;

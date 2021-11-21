@@ -14,13 +14,13 @@
             </x-slot>
 
             <x-tab :tabs="['Genel', 'Parola', 'Sosyal Medya']">
-                <x-tab.item key="0" class="text-gray-400">
+                <x-tab.item key="1" class="text-gray-400">
                     Genel Ayarlar
                 </x-tab.item>
-                <x-tab.item key="1" class="text-gray-400">
+                <x-tab.item key="2" class="text-gray-400">
                     Parola Ayarları
                 </x-tab.item>
-                <x-tab.item key="2" class="text-gray-400">
+                <x-tab.item key="3" class="text-gray-400">
                     Sosyal Medya Hesapları
                 </x-tab.item>
             </x-tab>
@@ -33,7 +33,7 @@
             </x-alert>
 
             @php
-            $doviz = simplexml_load_file('http://www.tcmb.gov.tr/kurlar/today.xml');
+            /* $doviz = simplexml_load_file('http://www.tcmb.gov.tr/kurlar/today.xml');
 
             $usd_alis = $doviz ->Currency[0]->BanknoteBuying;
             $usd_satis = $doviz ->Currency[0]->BanknoteSelling;
@@ -42,7 +42,7 @@
             $euro_satis = $doviz ->Currency[3]->BanknoteSelling;
 
             echo 'USD Alış: '.$usd_alis.'<br>USD Satış: '.$usd_satis.'<br>';
-            echo 'EUR Alış: '.$euro_alis.'<br>EUR Satış: '.$euro_satis;
+            echo 'EUR Alış: '.$euro_alis.'<br>EUR Satış: '.$euro_satis; */
             @endphp
 
         </x-card>

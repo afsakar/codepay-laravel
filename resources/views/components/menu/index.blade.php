@@ -1,3 +1,7 @@
+{{--
+TODO: Add permission check on menu-item and sub-menu-item
+TODO: Add Currency Module
+--}}
 <aside {{ $attributes->merge(['class' => 'z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
     <div class="py-4 text-gray-500 dark:text-gray-400">
         {{ $header }}
@@ -7,7 +11,17 @@
                     <x-heroicon-o-home class="h-5 w-5" />
                 </x-slot>
             </x-menu.menu-item>
-            <x-menu.menu-item :url="route('profile.show')" active="profile.show" :title="__('Profile')">
+            <x-menu.menu-list x-data="{ isRoleAndPermissionsMenuOpen: false, toggleRoleAndPermissionsMenuMenu() { this.isRoleAndPermissionsMenuOpen = ! this.isRoleAndPermissionsMenuOpen } }">
+                <x-menu.menu-item active="user-management" :title="__('User Management')" methodFrom="toggleRoleAndPermissionsMenuMenu" methodTo="isRoleAndPermissionsMenuOpen">
+                    <x-slot name="submenus">
+                        <x-menu.sub-menu-item :route="route('roles')" :title="__('Roles')" />
+                    </x-slot>
+                    <x-slot name="icon">
+                        <x-heroicon-o-user-group class="h-5 w-5" />
+                    </x-slot>
+                </x-menu.menu-item>
+            </x-menu.menu-list>
+            <x-menu.menu-item :url="route('profile.show')" active="user" :title="__('Profile')">
                 <x-slot name="icon">
                     <x-heroicon-o-user class="h-5 w-5" />
                 </x-slot>

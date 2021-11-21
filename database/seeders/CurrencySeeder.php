@@ -14,7 +14,7 @@ class CurrencySeeder extends Seeder
     public function run()
     {
         \App\Models\Currency::insert([
-            'name' => 'Turksih Liras',
+            'name' => 'Turkish Lira',
             'status' => 'active',
             'symbol' => "₺",
             'created_at' => now(),

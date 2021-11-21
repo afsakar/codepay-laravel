@@ -294,7 +294,7 @@
                                 &times;
                             </button>
                             <?php echo $locale ?>
-                            
+
                         </div>
                     </li>
                 <?php endforeach; ?>

@@ -33,7 +33,7 @@ class AccountsExport implements FromQuery, WithHeadings, ShouldAutoSize
 
     public function query()
     {
-        return Account::query()->select('name', 'description', 'balance', 'currency')->where(function ($query) {
+        return Account::query()->select('name', 'description', 'balance', 'currency_id')->where(function ($query) {
             foreach ($this->selected as $id) {
                 $query->orWhere('id', $id);
             }
