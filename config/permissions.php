@@ -8,7 +8,6 @@ return [
         'gate' => 'dashboard',
         'description' => '',
         'permissions' => [
-            'show' => 'Show',
             'read' => 'Read',
         ],
     ],
@@ -17,7 +16,7 @@ return [
         'gate' => 'user-management',
         'description' => 'User Management',
         'permissions' => [
-            'show' => 'Show'
+            'read' => 'Read',
         ],
         'submenus' => [
             [
@@ -25,10 +24,9 @@ return [
                 'gate' => 'users',
                 'description' => '',
                 'permissions' => [
-                    'show' => 'Show',
-                    'read' => 'Read',
                     'create' => 'Create',
-                    'edit' => 'Edit',
+                    'read' => 'Read',
+                    'update' => 'Update',
                     'delete' => 'Delete'
                 ],
             ],
@@ -37,10 +35,9 @@ return [
                 'gate' => 'roles',
                 'description' => '',
                 'permissions' => [
-                    'show' => 'Show',
-                    'read' => 'Read',
                     'create' => 'Create',
-                    'edit' => 'Edit',
+                    'read' => 'Read',
+                    'update' => 'Update',
                     'delete' => 'Delete'
                 ],
             ],
@@ -51,7 +48,18 @@ return [
         'gate' => 'translations',
         'description' => '',
         'permissions' => [
-            'show' => 'Show',
+            'read' => 'Read',
+        ],
+    ],
+    [
+        'title' => 'Companies',
+        'gate' => 'companies',
+        'description' => 'Company Management',
+        'permissions' => [
+            'create' => 'Create',
+            'read' => 'Read',
+            'update' => 'Update',
+            'delete' => 'Delete'
         ],
     ],
     [
@@ -59,7 +67,7 @@ return [
         'gate' => 'accounts',
         'description' => '',
         'permissions' => [
-            'show' => 'Show'
+            'read' => 'Read',
         ],
         'submenus' => [
             [
@@ -67,10 +75,9 @@ return [
                 'gate' => 'accounts',
                 'description' => '',
                 'permissions' => [
-                    'show' => 'Show',
-                    'read' => 'Read',
                     'create' => 'Create',
-                    'edit' => 'Edit',
+                    'read' => 'Read',
+                    'update' => 'Update',
                     'delete' => 'Delete'
                 ],
             ],
@@ -79,10 +86,9 @@ return [
                 'gate' => 'account_types',
                 'description' => '',
                 'permissions' => [
-                    'show' => 'Show',
-                    'read' => 'Read',
                     'create' => 'Create',
-                    'edit' => 'Edit',
+                    'read' => 'Read',
+                    'update' => 'Update',
                     'delete' => 'Delete'
                 ],
             ]

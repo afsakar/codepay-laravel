@@ -27,14 +27,18 @@
                 <x-dropdown.item type="button" wire:click="exportPdf" class="flex items-center space-x-2">
                     <span>{{ __('Export with PDF') }}</span>
                 </x-dropdown.item>
+                @permission('accounts.delete')
                 <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                     <span>{{ __('Delete') }}</span>
                 </x-dropdown.item>
+                @endpermission
             </x-dropdown>
             @endempty
+            @permission('accounts.create')
             <x-button wire:click="create" class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
                 <x-heroicon-o-plus class="h-5 w-5 mr-1" /> <span>{{ __('New') }}</span>
             </x-button>
+            @endpermission
         </div>
     </h4>
 
@@ -103,9 +107,11 @@
             <x-table>
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
+                        @permission('accounts.delete')
                         <x-table.column class="pr-0 w-8">
                             <x-input.checkbox wire:model="selectPage" />
                         </x-table.column>
+                        @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['owner'] ?? null" wire:click="sortBy('owner')">{{ __('Owner') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['description'] ?? null" wire:click="sortBy('description')">{{ __('Description') }}</x-table.column>
@@ -113,7 +119,9 @@
                         <x-table.column multi-column sortable :direction="$sorts['balance'] ?? null" wire:click="sortBy('balance')">{{ __('Balance') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
+                        @permission('accounts.update')
                         <x-table.column>{{ __('Actions') }}</x-table.column>
+                        @endpermission
                     </x-table.row>
                 </x-slot>
                 @if($selectPage)
@@ -136,9 +144,11 @@
                 @endif
                 @forelse ($accounts as $account)
                 <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $account->id }}">
+                    @permission('accounts.delete')
                     <x-table.cell class="pr-0">
                         <x-input.checkbox wire:model="selected" value="{{ $account->id }}" />
                     </x-table.cell>
+                    @endpermission
                     <x-table.cell>
                         {{ $account->name }}
                     </x-table.cell>
@@ -162,6 +172,7 @@
                     <x-table.cell title="{{ $account->created_at }}">
                         {{ $account->created_at->diffForHumans() }}
                     </x-table.cell>
+                    @permission('accounts.update')
                     <x-table.cell>
                         <div class="flex items-center space-x-4 text-sm">
                             <x-button wire:click="edit({{ $account->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
@@ -169,6 +180,7 @@
                             </x-button>
                         </div>
                     </x-table.cell>
+                    @endpermission
                 </x-table.row>
                 @empty
                 <x-table.cell colspan="9" class="dark:text-gray-400 dark:bg-gray-700">
@@ -182,6 +194,7 @@
         </x-card>
     </div>
 
+    @if(permission_check('accounts','create') || permission_check('accounts','update'))
     {{-- Create/Edit Modal --}}
     <form wire:submit.prevent="save">
         <x-jet-dialog-modal wire:model.defer="editingModal">
@@ -246,6 +259,7 @@
             </x-slot>
         </x-jet-dialog-modal>
     </form>
+    @endif
 
     {{-- Multiple Delete Modal --}}
     <form wire:submit.prevent="deleteSelected">

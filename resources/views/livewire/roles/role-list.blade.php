@@ -12,13 +12,13 @@
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
             @empty(!$selected)
+                @permission('roles.delete')
                 <x-dropdown :label="__('Bulk Actions')">
-                    @permission('roles.delete')
                     <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                         <span>{{ __('Delete') }}</span>
                     </x-dropdown.item>
-                    @endpermission
                 </x-dropdown>
+                @endpermission
             @endempty
             @permission('roles.create')
             <x-button wire:click="create" class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
@@ -81,7 +81,7 @@
                 @endif
                 @forelse ($roles as $role)
                     <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $role->id }}">
-                        @permission('roles.edit')
+                        @permission('roles.delete')
                         <x-table.cell class="pr-0">
                             @if($role->id != 1)
                             <x-input.checkbox wire:model="selected" value="{{ $role->id }}" />

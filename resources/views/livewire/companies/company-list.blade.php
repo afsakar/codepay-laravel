@@ -1,26 +1,18 @@
 <div x-data="{ showFilters: false,  openFilters() { this.showFilters = ! this.showFilters } }" class="w-full overflow-x-auto">
     <x-slot name="header">
-        {{__('Account Types')}}
+        {{__('Company List')}}
     </x-slot>
 
     {{-- Header --}}
     <h4 class="flex items-center justify-between my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200" >
         <div class="flex items-center justify-between">
-            {{__('Account Types')}}
-            <x-button x-on:click="openFilters" wire:click="toggleFilters" class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 dark:text-gray-400 border border-transparent rounded-lg focus:outline-none">
-                <template x-if="showFilters">
-                    <span class="flex items-center justify-between"><x-heroicon-o-chevron-up class="h-5 w-5 mr-1" /> {{ __("Close Filters") }}</span>
-                </template>
-                <template x-if="!showFilters">
-                    <span class="flex items-center justify-between"><x-heroicon-o-chevron-down class="h-5 w-5 mr-1" /> {{ __("Open Filters") }}</span>
-                </template>
-            </x-button>
+            {{__('Company List')}}
         </div>
 
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
             @empty(!$selected)
-                @permission('account_types.delete')
+                @permission('companies.delete')
                 <x-dropdown :label="__('Bulk Actions')">
                     <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                         <span>{{ __('Delete') }}</span>
@@ -28,7 +20,7 @@
                 </x-dropdown>
                 @endpermission
             @endempty
-            @permission('account_types.create')
+            @permission('companies.create')
             <x-button wire:click="create" class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
                 <x-heroicon-o-plus class="h-5 w-5 mr-1" /> <span>{{ __('New') }}</span>
             </x-button>
@@ -37,40 +29,11 @@
     </h4>
 
     <div class="w-full">
-        {{-- Filters --}}
-        <div>
-            <div x-show="showFilters"
-                 x-transition:enter="transition-all ease-in-out duration-300"
-                 x-transition:enter-start="opacity-25 max-h-0"
-                 x-transition:enter-end="opacity-100 max-h-xl"
-                 x-transition:leave="transition-all ease-in-out duration-300"
-                 x-transition:leave-start="opacity-100 max-h-xl"
-                 x-transition:leave-end="opacity-0 max-h-0">
-                <x-card class="mb-4" color="bg-cool-gray-200 dark:bg-gray-700">
-                    <div class="md:flex md:relative">
-                        <div class="md:w-1/2 pr-2 space-y-4">
-                            <x-input.group inline for="filter-status" label="Status">
-                                <x-input.select id="filter-status" wire:model="filters.status">
-                                    <option value="" disabled>{{ __('Select Status...') }}</option>
-                                    @foreach (App\Models\AccountType::STATUS as $key => $value)
-                                        <option value="{{ $key }}">{{ __($value) }}</option>
-                                    @endforeach
-                                </x-input.select>
-                            </x-input.group>
-                        </div>
-
-                        <div class="md:w-1/2 pl-2 space-y-4">
-                            <x-button.link wire:click="resetFilters" class="md:absolute right-0 bottom-0 p-4 dark:text-gray-400">{{ __('Reset Filters') }}</x-button.link>
-                        </div>
-                    </div>
-                </x-card>
-            </div>
-        </div>
 
         <x-card>
             {{-- Search Area --}}
             <div class="grid grid-cols-2 gap-4 py-4 dark:text-gray-400 dark:bg-gray-800">
-                <x-input.text wire:model="filters.search" placeholder="Search Account Types..."  />
+                <x-input.text wire:model="filters.search" placeholder="{{ __('Search Companies...') }}"  />
 
                 <div class="flex justify-end">
                     <x-input.select wire:model="perPage" id="perPage">
@@ -85,59 +48,69 @@
             <x-table>
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
-                        @permission('account_types.delete')
+                        @permission('companies.delete')
                         <x-table.column class="pr-0 w-8">
+                            @if($companies->count() != 0)
                             <x-input.checkbox wire:model="selectPage" />
+                            @endif
                         </x-table.column>
                         @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['owner'] ?? null" wire:click="sortBy('owner')">{{ __('Owner') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['tax_number'] ?? null" wire:click="sortBy('tax_number')">{{ __('Tax / ID Number') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
-                        @permission('account_types.update')
+                        @permission('companies.update')
                         <x-table.column>{{ __('Actions') }}</x-table.column>
                         @endpermission
                     </x-table.row>
                 </x-slot>
                 @if($selectPage)
                     <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
-                        <x-table.cell colspan="5">
+                        <x-table.cell colspan="7">
                             @unless ($selectAll)
                                 <div>
                                 <span>
-                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $types->count(), 'totalCount' => $types->total()]) !!}
+                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $companies->count(), 'totalCount' => $companies->total()]) !!}
                                 </span>
                                     <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
                                 </div>
                             @else
                                 <span>
-                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $types->total()]) !!}
+                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $companies->total()]) !!}
                         </span>
                             @endif
                         </x-table.cell>
                     </x-table.row>
                 @endif
-                @forelse ($types as $type)
-                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $type->id }}">
-                        @permission('account_types.delete')
+                @forelse ($companies as $company)
+                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $company->id }}">
+                        @permission('companies.delete')
                         <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $type->id }}" />
+                            <x-input.checkbox wire:model="selected" value="{{ $company->id }}" />
                         </x-table.cell>
                         @endpermission
                         <x-table.cell>
-                            {{ $type->name }}
+                            {{ $company->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$type->status_color">
-                                {{ __(App\Models\AccountType::STATUS[$type->status]) }}
+                            {{ $company->owner }}
+                        </x-table.cell>
+                        <x-table.cell>
+                            {{ $company->tax_number != "" ? $company->tax_number : $company->tc_number }}
+                        </x-table.cell>
+                        <x-table.cell>
+                            <x-badge :color="$company->status_color">
+                                {{ __(App\Models\Company::STATUS[$company->status]) }}
                             </x-badge>
                         </x-table.cell>
-                        <x-table.cell title="{{ $type->created_at }}">
-                            {{ $type->created_at->diffForHumans() }}
+                        <x-table.cell title="{{ $company->created_at }}">
+                            {{ $company->created_at->diffForHumans() }}
                         </x-table.cell>
-                        @permission('account_types.update')
+                        @permission('companies.update')
                         <x-table.cell>
                             <div class="flex items-center space-x-4 text-sm">
-                                <x-button wire:click="edit({{ $type->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
+                                <x-button wire:click="edit({{ $company->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                     <x-heroicon-o-pencil class="h-5 w-5" />
                                 </x-button>
                             </div>
@@ -145,14 +118,14 @@
                         @endpermission
                     </x-table.row>
                 @empty
-                    <x-table.cell colspan="5" class="dark:text-gray-400 dark:bg-gray-700">
+                    <x-table.cell colspan="7" class="dark:text-gray-400 dark:bg-gray-700">
                         <div class="flex items-center justify-center text-gray-400">
                             <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
                         </div>
                     </x-table.cell>
                 @endforelse
             </x-table>
-            {{ $types->links() }}
+            {{ $companies->links() }}
         </x-card>
     </div>
 
@@ -161,20 +134,61 @@
         <x-jet-dialog-modal wire:model.defer="editingModal">
             <x-slot name="title">
                 @if(!$createMode)
-                    {{ __('Editing Account Type') }}
+                    {{ __('Editing Company') }}
                 @else
-                    {{ __('Create Account Type') }}
+                    {{ __('Create Company') }}
                 @endif
             </x-slot>
 
             <x-slot name="content">
-                <x-input.group inline for="name" :label="__('Account Type Name')" :error="$errors->first('editing.name')">
-                    <x-input.text wire:model.defer="editing.name" id="name" />
+                <div class="md:grid md:grid-cols-2 md:space-x-4">
+                    <x-input.group inline for="name" :label="__('Name')" :error="$errors->first('editing.name')">
+                        <x-input.text wire:model.defer="editing.name" id="name" />
+                    </x-input.group>
+                    <x-input.group inline for="owner" :label="__('Owner')" :error="$errors->first('editing.owner')">
+                        <x-input.text wire:model.defer="editing.owner" id="owner" />
+                    </x-input.group>
+                </div>
+
+                <div class="md:grid md:grid-cols-2 md:space-x-4">
+                    <x-input.group inline for="tax-office" :label="__('Tax Office')" :error="$errors->first('editing.tax_office')">
+                        <x-input.text wire:model.defer="editing.tax_office" id="tax-office" />
+                    </x-input.group>
+                    <x-input.group inline for="tax-number" :label="__('Tax Number')" :error="$errors->first('editing.tax_number')">
+                        <x-input.text wire:model.defer="editing.tax_number" id="tax-number" />
+                    </x-input.group>
+                </div>
+
+                <div class="md:grid md:grid-cols-2 md:space-x-4">
+                    <x-input.group inline for="tc" :label="__('Identification Number')" :error="$errors->first('editing.tc_number')">
+                        <x-input.text wire:model.defer="editing.tc_number" id="tc" />
+                    </x-input.group>
+                    <x-input.group inline for="email" :label="__('Email Address')" :error="$errors->first('editing.email')">
+                        <x-input.text wire:model.defer="editing.email" id="email" />
+                    </x-input.group>
+                </div>
+
+                <x-input.group inline for="address" :label="__('Address')" :error="$errors->first('editing.address')">
+                    <x-input.textarea wire:model.defer="editing.address" id="address" />
                 </x-input.group>
-                <x-input.group inline for="filter-status" :label="__('Status')">
+
+                <x-input.group inline for="tel" :label="__('Phone Number')" :error="$errors->first('editing.tel_number')" :helpText="__('Please fill in without leading 0 (zero)')">
+                    <x-input.text wire:model.defer="editing.tel_number" id="tel" />
+                </x-input.group>
+
+                <div class="md:grid md:grid-cols-2 md:space-x-4">
+                    <x-input.group inline for="gsm" :label="__('GSM Number')" :error="$errors->first('editing.gsm_number')">
+                        <x-input.text wire:model.defer="editing.gsm_number" id="gsm" />
+                    </x-input.group>
+                    <x-input.group inline for="fax" :label="__('Fax Number')" :error="$errors->first('editing.fax_number')">
+                        <x-input.text wire:model.defer="editing.fax_number" id="fax" />
+                    </x-input.group>
+                </div>
+
+                <x-input.group inline for="filter-status" :label="__('Status')" :error="$errors->first('editing.status')">
                     <x-input.select id="filter-status" wire:model.defer="editing.status">
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-                        @foreach (App\Models\AccountType::STATUS as $key => $value)
+                        @foreach (App\Models\Company::STATUS as $key => $value)
                             <option value="{{ $key }}">{{ __($value) }}</option>
                         @endforeach
                     </x-input.select>
@@ -200,7 +214,7 @@
             </x-slot>
 
             <x-slot name="content">
-                {{ __('Are you sure you want to delete the selected items? This action is irreversible!') }}
+                {{ __('Are you sure you want to delete the selected records? This action is irreversible!') }}
             </x-slot>
 
             <x-slot name="footer">

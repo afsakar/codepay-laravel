@@ -31,7 +31,7 @@ class PermissionCheck
                 $perms = $user->role()->first()->permissions;
                 $permissions = json_decode($perms, true);
             }
-            if (isset($permissions[$route][$action])) {
+            if (isset($permissions[$route][$action]) && $permissions[$route][$action] == "true") {
                 return $next($request);
             } else {
                 return abort(403);

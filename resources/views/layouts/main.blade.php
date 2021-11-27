@@ -37,8 +37,6 @@
 
     @livewireScripts
     @include('layouts.includes.script')
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <x-livewire-alert::scripts />
-    <script src="https://unpkg.com/@themesberg/flowbite@1.1.1/dist/flowbite.bundle.js"></script>
 </body>
 </html>

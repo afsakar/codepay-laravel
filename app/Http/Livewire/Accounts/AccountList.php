@@ -20,7 +20,6 @@ class AccountList extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, LivewireAlert, WithCachedRows, WithToastNotification;
 
-    public $search = "";
     public Account $editing;
     public $accountTypes;
     public $currencies;
@@ -67,7 +66,7 @@ class AccountList extends Component
             'editing.owner' => __('Account Owner'),
             'editing.description' => __('Account Description'),
             'editing.balance' => __('Account Balance'),
-            'editing.status' => __('Account Status'),
+            'editing.status' => __('Status'),
             'editing.currency_id' => __('Account Currency'),
             'editing.currency_status' => __('Currency Status'),
         ];
