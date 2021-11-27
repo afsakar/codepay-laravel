@@ -5,6 +5,7 @@ use App\Http\Livewire\Accounts\AccountTypeList;
 use App\Http\Controllers\MainController;
 use App\Http\Livewire\Companies\CompanyList;
 use App\Http\Livewire\Roles\RoleList;
+use App\Http\Livewire\Suppliers\SupplierList;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     });
 
     Route::get('/companies', CompanyList::class)->middleware('PermissionCheck:companies,read')->name('companies');
+
+    Route::get('/suppliers', SupplierList::class)->middleware('PermissionCheck:suppliers,read')->name('suppliers');
 
     Route::get('/translations', ["Barryvdh\TranslationManager\Controller::class", "getIndex"])->middleware('PermissionCheck:translations,read')->name('translations');
 

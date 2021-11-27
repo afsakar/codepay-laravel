@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Livewire\Companies;
+namespace App\Http\Livewire\Suppliers;
 
-use App\Models\Company;
+use App\Models\Supplier;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use App\Http\Livewire\DataTable\WithSorting;
@@ -11,11 +11,11 @@ use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Livewire\DataTable\WithToastNotification;
 
-class CompanyList extends Component
+class SupplierList extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
 
-    public Company $editing;
+    public Supplier $editing;
     public $createMode = false;
     public $deleteModal = false;
     public $singleDelete = false;
@@ -27,21 +27,21 @@ class CompanyList extends Component
 
     public $filters = [
         'search' => "",
+        'status' => "",
     ];
 
     public function rules()
     {
         return [
-            'editing.name' => 'required|min:3|unique:companies,name,'.$this->editing->id,
+            'editing.name' => 'required|min:3|unique:suppliers,name,'.$this->editing->id,
             'editing.owner' => 'nullable',
-            'editing.tc_number' => Rule::requiredIf($this->editing->tax_number == "").'|nullable|numeric|digits:11|unique:companies,tc_number,'.$this->editing->id,
-            'editing.tel_number' => 'required|numeric|digits:10',
+            'editing.tel_number' => 'nullable|numeric|digits:10',
             'editing.gsm_number' => 'nullable|numeric|digits:10',
             'editing.fax_number' => 'nullable|numeric|digits:10',
             'editing.email' => 'nullable|email',
-            'editing.address' => 'required|min:3',
+            'editing.address' => 'nullable|min:3',
             'editing.tax_office' => 'nullable|min:3',
-            'editing.tax_number' => 'nullable|numeric|unique:companies,tax_number,'.$this->editing->id,
+            'editing.tax_number' => 'nullable|numeric|unique:suppliers,tax_number,'.$this->editing->id,
             'editing.status' => 'required',
         ];
     }
@@ -52,7 +52,6 @@ class CompanyList extends Component
             'editing.name' => __('Name'),
             'editing.owner' => __('Owner'),
             'editing.status' => __('Status'),
-            'editing.tc_number' => __('Identification Number'),
             'editing.tel_number' => __('Phone Number'),
             'editing.gsm_number' => __('GSM Number'),
             'editing.fax_number' => __('Fax Number'),
@@ -65,19 +64,19 @@ class CompanyList extends Component
 
     public function mount()
     {
-        $this->editing = $this->makeBlankCompany();
+        $this->editing = $this->makeBlankSupplier();
     }
 
-    public function makeBlankCompany()
+    public function makeBlankSupplier()
     {
-        return Company::make(['status' => 'active']);
+        return Supplier::make(['status' => 'active']);
     }
 
     /* Editing / Creating / Deleting / Exporting */
-    public function edit(Company $company)
+    public function edit(Supplier $supplier)
     {
         $this->useCachedRows();
-        if($this->editing->isNot($company)) $this->editing = $company;
+        if($this->editing->isNot($supplier)) $this->editing = $supplier;
         $this->editingModal = true;
     }
 
@@ -85,7 +84,7 @@ class CompanyList extends Component
     {
         $this->useCachedRows();
         $this->createMode = true;
-        if($this->editing->getKey()) $this->editing = $this->makeBlankCompany();
+        if($this->editing->getKey()) $this->editing = $this->makeBlankSupplier();
         $this->editingModal = true;
     }
 
@@ -106,7 +105,7 @@ class CompanyList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->makeBlankCompany();
+        $this->makeBlankSupplier();
         $this->resetValidation();
     }
 
@@ -142,12 +141,10 @@ class CompanyList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Company::query()
+        $query = Supplier::query()
+            ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
             ->when($this->filters['search'], fn($query, $search) => $query
-                ->where('name', 'like', '%'.$search.'%')
-                ->orWhere('owner', 'like', '%'.$search.'%')
-                ->orWhere('tc_number', 'like', '%'.$search.'%')
-                ->orWhere('tax_number', 'like', '%'.$search.'%'));
+                ->where('name', 'like', '%'.$search.'%'));
         return $this->applySorting($query);
     }
 
@@ -160,8 +157,8 @@ class CompanyList extends Component
 
     public function render()
     {
-        return view('livewire.companies.company-list', [
-            'companies' => $this->rows
+        return view('livewire.suppliers.supplier-list', [
+            'suppliers' => $this->rows
         ]);
     }
 }

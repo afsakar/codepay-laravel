@@ -49,6 +49,13 @@ TODO: Add Currency Module
                 </x-slot>
             </x-menu.menu-item>
         </x-menu.menu-list>
+        <x-menu.menu-list>
+            <x-menu.menu-item :url="route('suppliers')" active="suppliers" :title="__('Suppliers')">
+                <x-slot name="icon">
+                    <x-heroicon-o-truck class="h-5 w-5" />
+                </x-slot>
+            </x-menu.menu-item>
+        </x-menu.menu-list>
         <x-menu.menu-list x-data="{ isAccountsMenuOpen: false, toggleAccountsMenu() { this.isAccountsMenuOpen = ! this.isAccountsMenuOpen } }">
             <x-menu.menu-item active="accounts" :title="__('Accounts')" methodFrom="toggleAccountsMenu" methodTo="isAccountsMenuOpen">
                 <x-slot name="submenus">
