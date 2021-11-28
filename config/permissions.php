@@ -12,6 +12,35 @@ return [
         ],
     ],
     [
+        'title' => 'Settings',
+        'gate' => 'settings',
+        'description' => 'Application Settings',
+        'permissions' => [
+            'read' => 'Read',
+        ],
+        'submenus' => [
+            [
+                'title' => 'Translations',
+                'gate' => 'translations',
+                'description' => '',
+                'permissions' => [
+                    'read' => 'Read',
+                ],
+            ],
+            [
+                'title' => 'Currencies',
+                'gate' => 'currencies',
+                'description' => '',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+        ]
+    ],
+    [
         'title' => 'User Management',
         'gate' => 'user-management',
         'description' => 'User Management',
@@ -44,14 +73,6 @@ return [
         ]
     ],
     [
-        'title' => 'Translations',
-        'gate' => 'translations',
-        'description' => '',
-        'permissions' => [
-            'read' => 'Read',
-        ],
-    ],
-    [
         'title' => 'Companies',
         'gate' => 'companies',
         'description' => 'Company Management',
@@ -63,8 +84,50 @@ return [
         ],
     ],
     [
-        'title' => 'Accounts',
-        'gate' => 'accounts',
+        'title' => 'Sales',
+        'gate' => 'sales',
+        'description' => 'Sales Management',
+        'permissions' => [
+            'read' => 'Read',
+        ],
+        'submenus' => [
+            [
+                'title' => 'Customers',
+                'gate' => 'customers',
+                'description' => 'Customer Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+        ]
+    ],
+    [
+        'title' => 'Purchases',
+        'gate' => 'purchases',
+        'description' => 'Purchase Management',
+        'permissions' => [
+            'read' => 'Read',
+        ],
+        'submenus' => [
+            [
+                'title' => 'Suppliers',
+                'gate' => 'suppliers',
+                'description' => 'Supplier Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+        ]
+    ],
+    [
+        'title' => 'Banks',
+        'gate' => 'banks',
         'description' => '',
         'permissions' => [
             'read' => 'Read',

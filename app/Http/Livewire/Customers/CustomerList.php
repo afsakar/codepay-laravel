@@ -1,65 +1,82 @@
 <?php
 
-namespace App\Http\Livewire\Roles;
+namespace App\Http\Livewire\Customers;
 
-use App\Http\Livewire\DataTable\WithToastNotification;
-use App\Models\Role;
+use App\Models\Customer;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
+use App\Http\Livewire\DataTable\WithToastNotification;
 
-class RoleList extends Component
+class CustomerList extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
 
-    public $search = "";
-    public Role $editing;
+    public Customer $editing;
     public $createMode = false;
     public $deleteModal = false;
+    public $singleDelete = false;
     public $editingModal = false;
-    public $permissions = [];
 
-    protected $queryString = [];
+    protected $listeners = [
+        'save',
+    ];
 
     public $filters = [
         'search' => "",
+        'status' => "",
     ];
 
     public function rules()
     {
         return [
-            'editing.name' => 'required|min:3|unique:roles,name,'.$this->editing->id,
-            'editing.description' => 'nullable',
-            'permissions.*' => 'nullable',
+            'editing.name' => 'required|min:3|unique:customers,name,'.$this->editing->id,
+            'editing.owner' => 'nullable',
+            'editing.tel_number' => 'nullable|numeric|digits:10',
+            'editing.gsm_number' => 'nullable|numeric|digits:10',
+            'editing.fax_number' => 'nullable|numeric|digits:10',
+            'editing.email' => 'nullable|email',
+            'editing.address' => 'nullable|min:3',
+            'editing.tax_office' => 'nullable|min:3',
+            'editing.tax_number' => 'nullable|numeric|unique:customers,tax_number,'.$this->editing->id,
+            'editing.status' => 'required',
         ];
     }
 
     public function validationAttributes()
     {
         return [
-            'editing.name' => __('Role Name'),
-            'editing.description' => __('Description'),
+            'editing.name' => __('Name'),
+            'editing.owner' => __('Owner'),
+            'editing.status' => __('Status'),
+            'editing.tel_number' => __('Phone Number'),
+            'editing.gsm_number' => __('GSM Number'),
+            'editing.fax_number' => __('Fax Number'),
+            'editing.email' => __('Email Address'),
+            'editing.address' => __('Address'),
+            'editing.tax_office' => __('Tax Office'),
+            'editing.tax_number' => __('Tax Number'),
         ];
     }
 
     public function mount()
     {
-        $this->editing = $this->makeBlankRole();
+        $this->editing = $this->makeBlankCustomer();
     }
 
-    public function makeBlankRole()
+    public function makeBlankCustomer()
     {
-        return Role::make();
+        return Customer::make(['status' => 'active']);
     }
 
     /* Editing / Creating / Deleting / Exporting */
-    public function edit(Role $role)
+    public function edit(Customer $customer)
     {
         $this->useCachedRows();
-        if($this->editing->isNot($role)) $this->editing = $role;
-        $this->permissions = $role->perms;
+        if($this->editing->isNot($customer)) $this->editing = $customer;
         $this->editingModal = true;
     }
 
@@ -67,26 +84,18 @@ class RoleList extends Component
     {
         $this->useCachedRows();
         $this->createMode = true;
-        if($this->editing->getKey()) $this->editing = $this->makeBlankRole();
-        $this->permissions = [];
+        if($this->editing->getKey()) $this->editing = $this->makeBlankCustomer();
         $this->editingModal = true;
     }
 
     public function save()
     {
-        $data = [
-            'name' => $this->editing->name,
-            'description' => $this->editing->description,
-            'permissions' => json_encode($this->permissions),
-        ];
-
         $this->validate();
+        $this->editing->save();
         if($this->createMode) {
             $this->createMode = false;
-            Role::create($data);
             $this->notify('Record has been created successfully!');
         }else{
-            Role::where('id', $this->editing->id)->update($data);
             $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
@@ -96,7 +105,7 @@ class RoleList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->makeBlankRole();
+        $this->makeBlankCustomer();
         $this->resetValidation();
     }
 
@@ -106,14 +115,13 @@ class RoleList extends Component
             $this->selectedRowsQuery->delete();
             $this->notify('Selected records have been deleted successfully!');
         }catch (\Exception $e) {
-            $this->notify('You can\'t delete '. $this->editing->name .', because it is being used by other items!', 'error');
+            $this->notify('An error occurred while deleting selected records!', 'error');
         }
         $this->deleteModal = false;
         $this->selectAll = false;
         $this->selectPage = false;
         $this->selected = [];
     }
-
     /* Editing / Creating / Deleting / Exporting */
 
     public function toggleFilters()
@@ -133,8 +141,10 @@ class RoleList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Role::query()
-            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
+        $query = Customer::query()
+            ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
+            ->when($this->filters['search'], fn($query, $search) => $query
+                ->where('name', 'like', '%'.$search.'%'));
         return $this->applySorting($query);
     }
 
@@ -147,8 +157,8 @@ class RoleList extends Component
 
     public function render()
     {
-        return view('livewire.roles.role-list', [
-            'roles' => $this->rows
+        return view('livewire.customers.customer-list', [
+            'customers' => $this->rows
         ]);
     }
 }

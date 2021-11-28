@@ -75,3 +75,11 @@ if (!function_exists('permission_check')) {
     }
 
 }
+
+if(!function_exists('exchange_rates')){
+    function exchange_rates($currency, $type = "satis")
+    {
+        $URL = json_decode(file_get_contents('https://api.genelpara.com/embed/para-birimleri.json'), true);
+        return $URL[$currency][$type];
+    }
+}

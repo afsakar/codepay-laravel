@@ -7,14 +7,14 @@ use Illuminate\View\Component;
 class MenuItem extends Component
 {
 
-    public $url, $active, $title, $icon, $submenus, $methodFrom, $methodTo;
+    public $url, $active, $title, $icon, $submenus, $methodFrom, $methodTo, $permission;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($url = "#", $active = "", $title= "", $icon = "", $submenus = [], $methodFrom = "", $methodTo = "")
+    public function __construct($url = "#", $active = "", $title= "", $icon = "", $submenus = [], $methodFrom = "", $methodTo = "", $permission = "")
     {
         $this->url = $url;
         $this->active = $active;
@@ -23,6 +23,7 @@ class MenuItem extends Component
         $this->submenus = $submenus;
         $this->methodFrom = $methodFrom;
         $this->methodTo = $methodTo;
+        $this->permission = $permission;
     }
 
     /**

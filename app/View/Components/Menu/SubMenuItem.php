@@ -6,16 +6,17 @@ use Illuminate\View\Component;
 
 class SubMenuItem extends Component
 {
-    public $route, $title;
+    public $route, $title, $permission;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($route = "#", $title)
+    public function __construct($route = "#", $title, $permission = "")
     {
         $this->route = $route;
         $this->title = $title;
+        $this->permission = $permission;
     }
 
     /**

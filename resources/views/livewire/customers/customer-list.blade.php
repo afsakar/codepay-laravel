@@ -1,12 +1,12 @@
 <div x-data="{ showFilters: false,  openFilters() { this.showFilters = ! this.showFilters } }" class="w-full overflow-x-auto">
     <x-slot name="header">
-        {{__('Supplier List')}}
+        {{__('Customer List')}}
     </x-slot>
 
     {{-- Header --}}
     <h4 class="flex items-center justify-between my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200" >
         <div class="flex items-center justify-between">
-            {{__('Supplier List')}}
+            {{__('Customer List')}}
             <x-button x-on:click="openFilters" wire:click="toggleFilters" class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 dark:text-gray-400 border border-transparent rounded-lg focus:outline-none">
                 <template x-if="showFilters">
                     <span class="flex items-center justify-between"><x-heroicon-o-chevron-up class="h-5 w-5 mr-1" /> {{ __("Close Filters") }}</span>
@@ -20,7 +20,7 @@
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
             @empty(!$selected)
-                @permission('suppliers.delete')
+                @permission('customers.delete')
                 <x-dropdown :label="__('Bulk Actions')">
                     <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                         <span>{{ __('Delete') }}</span>
@@ -28,7 +28,7 @@
                 </x-dropdown>
                 @endpermission
             @endempty
-            @permission('suppliers.create')
+            @permission('customers.create')
             <x-button wire:click="create" class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
                 <x-heroicon-o-plus class="h-5 w-5 mr-1" /> <span>{{ __('New') }}</span>
             </x-button>
@@ -52,7 +52,7 @@
                             <x-input.group inline for="filter-status" :label="__('Status')">
                                 <x-input.select id="filter-status" wire:model="filters.status">
                                     <option value="" disabled>{{ __('Select Status...') }}</option>
-                                    @foreach (App\Models\Supplier::STATUS as $key => $value)
+                                    @foreach (App\Models\Customer::STATUS as $key => $value)
                                         <option value="{{ $key }}">{{ __($value) }}</option>
                                     @endforeach
                                 </x-input.select>
@@ -70,7 +70,7 @@
         <x-card>
             {{-- Search Area --}}
             <div class="grid grid-cols-2 gap-4 py-4 dark:text-gray-400 dark:bg-gray-800">
-                <x-input.text wire:model="filters.search" placeholder="{{ __('Search Suppliers...') }}"  />
+                <x-input.text wire:model="filters.search" placeholder="{{ __('Search Customers...') }}"  />
 
                 <div class="flex justify-end">
                     <x-input.select wire:model="perPage" id="perPage">
@@ -85,9 +85,9 @@
             <x-table>
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
-                        @permission('suppliers.delete')
+                        @permission('customers.delete')
                         <x-table.column class="pr-0 w-8">
-                            @if($suppliers->count() != 0)
+                            @if($customers->count() != 0)
                                 <x-input.checkbox wire:model="selectPage" />
                             @endif
                         </x-table.column>
@@ -97,7 +97,7 @@
                         <x-table.column multi-column sortable :direction="$sorts['balance'] ?? null" wire:click="sortBy('balance')">{{ __('Balance') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
-                        @permission('suppliers.update')
+                        @permission('customers.update')
                         <x-table.column>{{ __('Actions') }}</x-table.column>
                         @endpermission
                     </x-table.row>
@@ -108,46 +108,46 @@
                             @unless ($selectAll)
                                 <div>
                                 <span>
-                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $suppliers->count(), 'totalCount' => $suppliers->total()]) !!}
+                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $customers->count(), 'totalCount' => $customers->total()]) !!}
                                 </span>
                                     <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
                                 </div>
                             @else
                                 <span>
-                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $suppliers->total()]) !!}
+                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $customers->total()]) !!}
                         </span>
                             @endif
                         </x-table.cell>
                     </x-table.row>
                 @endif
-                @forelse ($suppliers as $supplier)
-                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $supplier->id }}">
-                        @permission('suppliers.delete')
+                @forelse ($customers as $customer)
+                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $customer->id }}">
+                        @permission('customers.delete')
                         <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $supplier->id }}" />
+                            <x-input.checkbox wire:model="selected" value="{{ $customer->id }}" />
                         </x-table.cell>
                         @endpermission
                         <x-table.cell>
-                            {{ $supplier->name }}
+                            {{ $customer->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $supplier->tax_number != "" ? $supplier->tax_number : "-" }}
+                            {{ $customer->tax_number != "" ? $customer->tax_number : "-" }}
                         </x-table.cell>
                         <x-table.cell>
                             Balance
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$supplier->status_color">
-                                {{ __(App\Models\Supplier::STATUS[$supplier->status]) }}
+                            <x-badge :color="$customer->status_color">
+                                {{ __(App\Models\Customer::STATUS[$customer->status]) }}
                             </x-badge>
                         </x-table.cell>
-                        <x-table.cell title="{{ $supplier->created_at }}">
-                            {{ $supplier->created_at->diffForHumans() }}
+                        <x-table.cell title="{{ $customer->created_at }}">
+                            {{ $customer->created_at->diffForHumans() }}
                         </x-table.cell>
-                        @permission('suppliers.update')
+                        @permission('customers.update')
                         <x-table.cell>
                             <div class="flex items-center space-x-4 text-sm">
-                                <x-button wire:click="edit({{ $supplier->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
+                                <x-button wire:click="edit({{ $customer->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                     <x-heroicon-o-pencil class="h-5 w-5" />
                                 </x-button>
                             </div>
@@ -162,7 +162,7 @@
                     </x-table.cell>
                 @endforelse
             </x-table>
-            {{ $suppliers->links() }}
+            {{ $customers->links() }}
         </x-card>
     </div>
 
@@ -171,9 +171,9 @@
         <x-jet-dialog-modal wire:model.defer="editingModal">
             <x-slot name="title">
                 @if(!$createMode)
-                    {{ __('Editing Supplier') }}
+                    {{ __('Editing Customer') }}
                 @else
-                    {{ __('Create Supplier') }}
+                    {{ __('Create Customer') }}
                 @endif
             </x-slot>
 
@@ -221,7 +221,7 @@
                 <x-input.group inline for="filter-status" :label="__('Status')" :error="$errors->first('editing.status')">
                     <x-input.select id="filter-status" wire:model.defer="editing.status">
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-                        @foreach (App\Models\Supplier::STATUS as $key => $value)
+                        @foreach (App\Models\Customer::STATUS as $key => $value)
                             <option value="{{ $key }}">{{ __($value) }}</option>
                         @endforeach
                     </x-input.select>

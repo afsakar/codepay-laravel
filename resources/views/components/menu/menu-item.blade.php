@@ -1,3 +1,4 @@
+@if(!$permission || permission_check($permission, 'read'))
 <li class="relative px-6 py-3">
     @if(Request::is("$active/*") || Request::is("$active"))
         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg" aria-hidden="true" ></span>
@@ -14,13 +15,16 @@
         </span>
 
         @if($submenus)
-            <svg
-            class="w-4 h-4"
-            aria-hidden="true"
-            fill="currentColor"
-            viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" ></path>
-            </svg>
+            <template x-if="{{$methodTo}}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+            </template>
+            <template x-if="!{{$methodTo}}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </template>
         @endif
         </x-button>
     @else
@@ -39,4 +43,5 @@
             </ul>
         </template>
     @endif
-  </li>
+</li>
+@endif

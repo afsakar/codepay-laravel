@@ -1,12 +1,12 @@
 <div class="w-full overflow-x-auto">
     <x-slot name="header">
-        {{__('Role List')}}
+        {{__('Role and Permission List')}}
     </x-slot>
 
     {{-- Header --}}
     <h4 class="flex items-center justify-between my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200" >
         <div class="flex items-center justify-between">
-            {{__('Role List')}}
+            {{__('Role and Permission List')}}
         </div>
 
         {{-- Bulk Actions --}}
