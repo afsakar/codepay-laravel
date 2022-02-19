@@ -8,6 +8,7 @@ use App\Models\Currency;
 use Carbon\Carbon;
 use App\Models\Account;
 use App\Models\AccountType;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithBulkActions;
@@ -169,10 +170,12 @@ class AccountList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Account::query()
+        $query = Account::query()->withSum('revenue', 'amount')
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
-            ->when($this->filters['balance-min'], fn($query, $balance) => $query->where('balance', '>=', $balance))
-            ->when($this->filters['balance-max'], fn($query, $balance) => $query->where('balance', '<=', $balance))
+            ->when($this->filters['balance-min'], fn($query, $balance) => $query
+                ->having(DB::raw('IF(count(revenue_sum_amount) > 0, SUM(revenue_sum_amount + balance), balance)'), '>=', $balance)->groupBy('id'))
+            ->when($this->filters['balance-max'], fn($query, $balance) => $query
+                ->having(DB::raw('IF(count(revenue_sum_amount) > 0, SUM(revenue_sum_amount + balance), balance)'), '<=', $balance)->groupBy('id'))
             ->when($this->filters['date-min'], fn($query, $created_at) => $query->where('created_at', '>=', Carbon::parse($created_at)))
             ->when($this->filters['date-max'], fn($query, $created_at) => $query->where('created_at', '<=', Carbon::parse($created_at)))
             ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')->orWhere('owner', 'like', '%'.$search.'%'));

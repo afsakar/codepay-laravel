@@ -83,7 +83,7 @@
                     <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $role->id }}">
                         @permission('roles.delete')
                         <x-table.cell class="pr-0">
-                            @if($role->id != 1)
+                            @if(!in_array($role->id, [1,2,3]))
                             <x-input.checkbox wire:model="selected" value="{{ $role->id }}" />
                             @endif
                         </x-table.cell>

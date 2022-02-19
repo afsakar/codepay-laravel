@@ -25,13 +25,10 @@ class PermissionCheck
         if ($user->role_id === 1) {
             return $next($request);
         } else {
-            if ($user->permissions != "null") {
-                $permissions = json_decode($user->permissions, true);
-            } else {
-                $perms = $user->role()->first()->permissions;
-                $permissions = json_decode($perms, true);
-            }
-            if (isset($permissions[$route][$action]) && $permissions[$route][$action] == "true") {
+            $perms = $user->role()->first()->permissions;
+            $permissions = json_decode($perms, true);
+
+            if (isset($permissions[$route][$action]) && $permissions[$route][$action] == true) {
                 return $next($request);
             } else {
                 return abort(403);

@@ -19,7 +19,7 @@ class CreateAccountsTable extends Migration
             $table->string('name')->unique();
             $table->string('owner')->nullable();
             $table->string('description')->nullable();
-            $table->decimal('balance', 9, 3)->default(0);
+            $table->decimal('balance', 15, 2)->default(0);
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->unsignedBigInteger('currency_id');
             $table->enum('currency_status', ['after', 'before'])->default('after');

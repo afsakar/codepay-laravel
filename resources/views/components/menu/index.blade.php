@@ -1,8 +1,3 @@
-{{--
-TODO: Add permission check on menu-item and sub-menu-item
-TODO: Add Currency Module
-TODO: Add Sales and Purchase Module
---}}
 <aside {{ $attributes->merge(['class' => 'z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
     <div class="py-4 text-gray-500 dark:text-gray-400">
         {{ $header }}
@@ -17,6 +12,7 @@ TODO: Add Sales and Purchase Module
                     <x-slot name="submenus">
                         <x-menu.sub-menu-item :route="route('translations')" :title="__('Translations')" permission="translations" />
                         <x-menu.sub-menu-item :route="route('currencies')" :title="__('Currencies')" permission="currencies" />
+                        <x-menu.sub-menu-item :route="route('categories')" :title="__('Categories')" permission="categories" />
                     </x-slot>
                     <x-slot name="icon">
                         <x-heroicon-o-cog class="h-5 w-5" />
@@ -46,6 +42,7 @@ TODO: Add Sales and Purchase Module
             <x-menu.menu-item active="sales" title="Sales" methodFrom="toggleSalesMenu" methodTo="isSalesMenuOpen" permission="sales">
                 <x-slot name="submenus">
                     <x-menu.sub-menu-item :route="route('customers')" :title="__('Customers')" permission="customers" />
+                    <x-menu.sub-menu-item :route="route('revenues')" :title="__('Revenues')" permission="revenues" />
                 </x-slot>
                 <x-slot name="icon">
                     <x-heroicon-o-shopping-cart class="h-5 w-5" />
@@ -74,10 +71,7 @@ TODO: Add Sales and Purchase Module
             </x-menu.menu-item>
         </x-menu.menu-list>
         <x-menu.menu-list class="px-6 my-6">
-            <x-button class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                Create account
-                <span class="ml-2" aria-hidden="true">+</span>
-            </x-button>
+            <livewire:change-company />
         </x-menu.menu-list>
       </div>
 </aside>

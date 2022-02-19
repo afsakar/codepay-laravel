@@ -35,4 +35,9 @@ class Customer extends Model
             'inactive' => 'red',
         ][$this->status];
     }
+
+    public function revenue()
+    {
+        return $this->hasMany(Revenue::class, 'customer_id');
+    }
 }

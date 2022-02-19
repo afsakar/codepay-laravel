@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Livewire\Currencies;
+namespace App\Http\Livewire\Categories;
 
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithToastNotification;
-use App\Models\Currency;
+use App\Models\Category;
 use Livewire\Component;
 
-class CurrencyList extends Component
+class CategoryList extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
 
     public $search = "";
-    public Currency $editing;
+    public Category $editing;
     public $createMode = false;
     public $deleteModal = false;
     public $editingModal = false;
@@ -25,15 +25,15 @@ class CurrencyList extends Component
     public $filters = [
         'search' => "",
         'status' => "",
+        'type' => "",
     ];
 
     public function rules()
     {
         return [
-            'editing.name' => 'required|min:3|unique:currencies,name,'.$this->editing->id,
-            'editing.code' => 'required|size:3|unique:currencies,code,'.$this->editing->id,
-            'editing.symbol' => 'required|unique:currencies,symbol,'.$this->editing->id,
-            'editing.status' => 'required',
+            'editing.name' => 'required|min:3|unique:categories,name,'.$this->editing->id,
+            'editing.type' => 'required|in:income,expense',
+            'editing.status' => 'required|in:active,inactive',
         ];
     }
 
@@ -41,27 +41,26 @@ class CurrencyList extends Component
     {
         return [
             'editing.name' => __('Name'),
-            'editing.code' => __('Code'),
-            'editing.symbol' => __('Symbol'),
+            'editing.type' => __('Type'),
             'editing.status' => __('Status'),
         ];
     }
 
     public function mount()
     {
-        $this->editing = $this->makeBlankCurrency();
+        $this->editing = $this->makeBlankCategory();
     }
 
-    public function makeBlankCurrency()
+    public function makeBlankCategory()
     {
-        return Currency::make(['status' => 'active']);
+        return Category::make(['status' => 'active', 'type' => '']);
     }
 
     /* Editing / Creating / Deleting / Exporting */
-    public function edit(Currency $type)
+    public function edit(Category $category)
     {
         $this->useCachedRows();
-        if($this->editing->isNot($type)) $this->editing = $type;
+        if($this->editing->isNot($category)) $this->editing = $category;
         $this->editingModal = true;
     }
 
@@ -69,7 +68,7 @@ class CurrencyList extends Component
     {
         $this->useCachedRows();
         $this->createMode = true;
-        if($this->editing->getKey()) $this->editing = $this->makeBlankCurrency();
+        if($this->editing->getKey()) $this->editing = $this->makeBlankCategory();
         $this->editingModal = true;
     }
 
@@ -90,7 +89,7 @@ class CurrencyList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->makeBlankCurrency();
+        $this->makeBlankCategory();
         $this->resetValidation();
     }
 
@@ -127,11 +126,10 @@ class CurrencyList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Currency::query()
+        $query = Category::query()
+            ->when($this->filters['type'], fn($query, $type) => $query->where('type', $type))
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
-            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('symbol', 'like', '%'.$search.'%')
-                ->orWhere('code', 'like', '%'.$search.'%'));
+            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
         return $this->applySorting($query);
     }
 
@@ -144,8 +142,8 @@ class CurrencyList extends Component
 
     public function render()
     {
-        return view('livewire.currencies.currency-list', [
-            'currencies' => $this->rows
+        return view('livewire.categories.category-list', [
+            'categories' => $this->rows
         ]);
     }
 }

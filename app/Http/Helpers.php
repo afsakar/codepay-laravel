@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Company;
+
 if (!function_exists('get_gravatar')) {
 
     /**
@@ -59,13 +61,10 @@ if (!function_exists('permission_check')) {
         if ($user->role_id === 1) {
             return true;
         } else {
-            if ($user->permissions != "null") {
-                $permissions = json_decode($user->permissions, true);
-            } else {
-                $perms = $user->role()->first()->permissions;
-                $permissions = json_decode($perms, true);
-            }
-            if (isset($permissions[$route][$action]) && $permissions[$route][$action] == "true") {
+            $perms = $user->role()->first()->permissions;
+            $permissions = json_decode($perms, true);
+
+            if (isset($permissions[$route][$action]) && $permissions[$route][$action] == true) {
                 return true;
             } else {
                 return false;
@@ -81,5 +80,45 @@ if(!function_exists('exchange_rates')){
     {
         $URL = json_decode(file_get_contents('https://api.genelpara.com/embed/para-birimleri.json'), true);
         return $URL[$currency][$type];
+    }
+}
+
+if(!function_exists('currency_rates')){
+    function currency_rates($code)
+    {
+        $xmlString = file_get_contents('https://www.tcmb.gov.tr/kurlar/today.xml', true);
+
+        $json = simplexml_load_string($xmlString);
+        $json = json_encode($xmlString);
+        $array = json_decode($json,true);
+        $array = str_replace(array("\n", "\r", "\t"), '', $array);
+        $array = trim(str_replace('"', "'", $array));
+        $array = simplexml_load_string($array);
+
+        return [
+            'USD' => [
+                'name' => $array->Currency[0]->Name,
+                'selling' => (float)$array->Currency[0]->ForexSelling,
+                'buying' => (float)$array->Currency[0]->ForexBuying,
+            ],
+            'EUR' => [
+                'name' => $array->Currency[3]->Name,
+                'selling' => (float)$array->Currency[3]->ForexSelling,
+                'buying' => (float)$array->Currency[3]->ForexBuying,
+            ],
+            'GBP' => [
+                'name' => $array->Currency[4]->Name,
+                'selling' => (float)$array->Currency[4]->ForexSelling,
+                'buying' => (float)$array->Currency[4]->ForexBuying,
+            ],
+
+        ][$code];
+    }
+}
+
+if(!function_exists('get_company_info')){
+    function get_company_info()
+    {
+        return Company::where('id', session()->get('company_id'))->first();
     }
 }

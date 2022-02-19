@@ -31,7 +31,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role_id',
-        'permissions',
     ];
 
     /**
@@ -62,7 +61,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $appends = [
         'profile_photo_url',
-        'permission',
     ];
 
     /**
@@ -73,8 +71,4 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    public function getPermissionAttribute()
-    {
-        return json_decode($this->permissions, true);
-    }
 }

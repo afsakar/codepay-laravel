@@ -28,7 +28,7 @@
                     <span>{{ __('Export with PDF') }}</span>
                 </x-dropdown.item>
                 @permission('accounts.delete')
-                <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
+                <x-dropdown.item type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                     <span>{{ __('Delete') }}</span>
                 </x-dropdown.item>
                 @endpermission

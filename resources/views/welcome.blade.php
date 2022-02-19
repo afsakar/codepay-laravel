@@ -25,30 +25,32 @@
                 </x-tab.item>
             </x-tab>
 
-            <x-alert dismissible color="red" id="alert">
+            <x-alert dismissible color="green" id="alert">
                 <x-slot name="icon">
-                    <x-heroicon-s-check class="w-6 h-6" />
+                    <x-heroicon-s-check class="w-6 h-6"/>
                 </x-slot>
-                A simple info alert with an <a href="#" class="font-semibold underline">example link</a>. Give it a click if you like.
+                A simple info alert with an <a href="#" class="font-semibold underline">example link</a>. Give it a
+                click if you like.
             </x-alert>
 
             @php
-            $doviz = simplexml_load_file('http://www.tcmb.gov.tr/kurlar/today.xml');
+                /*
+                    $doviz = simplexml_load_file('http://www.tcmb.gov.tr/kurlar/today.xml');
 
-            $usd_alis = $doviz ->Currency[0]->BanknoteBuying;
-            $usd_satis = $doviz ->Currency[0]->BanknoteSelling;
+                    $usd_alis = $doviz->Currency[0]->BanknoteBuying;
+                    $usd_satis = $doviz->Currency[0]->BanknoteSelling;
 
-            $euro_alis = $doviz ->Currency[3]->BanknoteBuying;
-            $euro_satis = $doviz ->Currency[3]->BanknoteSelling;
+                    $euro_alis = $doviz->Currency[3]->BanknoteBuying;
+                    $euro_satis = $doviz->Currency[3]->BanknoteSelling;
 
-            echo 'USD Alış: '.$usd_alis.'<br>USD Satış: '.$usd_satis.'<br>';
-            echo 'EUR Alış: '.$euro_alis.'<br>EUR Satış: '.$euro_satis;
+                    echo 'USD Alış: '.$usd_alis.'<br>USD Satış: '.$usd_satis.'<br>';
+                    echo 'EUR Alış: '.$euro_alis.'<br>EUR Satış: '.$euro_satis;
+                */
             @endphp
 
         </x-card>
 
-        {{ exchange_rates('USD').'TL' }}
-        {{ exchange_rates('USD', 'degisim').'TL' }}
+        {{ currency_rates('USD')['selling'] }}
 
     </div>
 </x-main-layout>

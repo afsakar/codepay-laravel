@@ -10,7 +10,7 @@
         </svg>
     </span>
 
-    <input
+    <input autocomplete="off"
         {{ $attributes->whereDoesntStartWith('wire:model') }}
         x-ref="input"
         x-bind:value="value"

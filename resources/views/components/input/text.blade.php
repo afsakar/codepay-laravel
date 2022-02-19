@@ -9,5 +9,5 @@
         </span>
     @endif
 
-    <input {{ $attributes->merge(['class' => 'flex-1 form-input border-cool-gray-300 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5 dark:text-gray-400 dark:bg-gray-800 border-1 dark:border-gray-600' . ($leadingAddOn ? ' rounded-none rounded-r-md' : '')]) }}/>
+    <input autocomplete="off" {{ $attributes->merge(['class' => 'flex-1 form-input border-cool-gray-300 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5 dark:text-gray-400 dark:bg-gray-800 border-1 dark:border-gray-600' . ($leadingAddOn ? ' rounded-none rounded-r-md' : '')]) }}/>
 </div>

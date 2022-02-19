@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Suppliers;
+namespace App\Http\Livewire\Purchases;
 
 use App\Models\Supplier;
 use Livewire\Component;
@@ -157,7 +157,7 @@ class SupplierList extends Component
 
     public function render()
     {
-        return view('livewire.suppliers.supplier-list', [
+        return view('livewire.purchases.supplier-list', [
             'suppliers' => $this->rows
         ]);
     }

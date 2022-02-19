@@ -38,6 +38,17 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Categories',
+                'gate' => 'categories',
+                'description' => 'Revenue & Payment Categories',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [
@@ -95,6 +106,17 @@ return [
                 'title' => 'Customers',
                 'gate' => 'customers',
                 'description' => 'Customer Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+            [
+                'title' => 'Revenues',
+                'gate' => 'revenues',
+                'description' => 'Revenue Management',
                 'permissions' => [
                     'create' => 'Create',
                     'read' => 'Read',

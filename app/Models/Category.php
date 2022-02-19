@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Currency extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -14,10 +14,14 @@ class Currency extends Model
         'inactive' => 'Inactive',
     ];
 
+    const TYPES = [
+        'income' => 'Income',
+        'expense' => 'Expense',
+    ];
+
     protected $fillable = [
         'name',
-        'code',
-        'symbol',
+        'type',
         'status',
     ];
 
@@ -27,5 +31,13 @@ class Currency extends Model
             'active' => 'green',
             'inactive' => 'red',
         ][$this->status];
+    }
+
+    public function getTypeColorAttribute()
+    {
+        return [
+            'income' => 'green',
+            'expense' => 'red',
+        ][$this->type];
     }
 }

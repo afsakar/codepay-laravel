@@ -15,13 +15,15 @@ class CurrencySeeder extends Seeder
     {
         \App\Models\Currency::insert([
             'name' => 'Turkish Lira',
+            'code' => 'TRY',
             'status' => 'active',
             'symbol' => "₺",
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         \App\Models\Currency::insert([
-            'name' => 'USD',
+            'name' => 'American Dollar',
+            'code' => 'USD',
             'status' => 'active',
             'symbol' => "$",
             'created_at' => now(),
@@ -29,8 +31,17 @@ class CurrencySeeder extends Seeder
         ]);
         \App\Models\Currency::insert([
             'name' => 'Euro',
+            'code' => 'EUR',
             'status' => 'active',
             'symbol' => "€",
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        \App\Models\Currency::insert([
+            'name' => 'Pound Sterling',
+            'code' => 'GBP',
+            'status' => 'active',
+            'symbol' => "£",
             'created_at' => now(),
             'updated_at' => now(),
         ]);

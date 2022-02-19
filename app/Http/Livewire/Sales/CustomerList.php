@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Customers;
+namespace App\Http\Livewire\Sales;
 
 use App\Models\Customer;
 use Livewire\Component;
@@ -144,7 +144,7 @@ class CustomerList extends Component
         $query = Customer::query()
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
             ->when($this->filters['search'], fn($query, $search) => $query
-                ->where('name', 'like', '%'.$search.'%'));
+                ->where('name', 'like', '%'.$search.'%'))->with('revenue');
         return $this->applySorting($query);
     }
 
@@ -157,7 +157,7 @@ class CustomerList extends Component
 
     public function render()
     {
-        return view('livewire.customers.customer-list', [
+        return view('livewire.sales.customer-list', [
             'customers' => $this->rows
         ]);
     }

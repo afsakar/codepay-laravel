@@ -16,7 +16,7 @@
             {{ $currency }}
         </span>
     </div>
-    <input @if($position == "before") style="padding-left: 3rem;" @endif type="text" {{ $attributes }}
+    <input autocomplete="off" @if($position == "before") style="padding-left: 3rem;" @endif type="text" {{ $attributes }}
            class="form-input block w-full p-3 sm:text-sm sm:leading-5 {{ $inputClass }} dark:text-gray-400 dark:bg-gray-800 border-1 dark:border-gray-600"
            placeholder="0.00" aria-describedby="price-currency">
 </div>

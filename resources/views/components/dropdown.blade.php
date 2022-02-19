@@ -3,7 +3,7 @@
 <div x-data="{ open: false }" @keydown.window.escape="open = false" @click.away="open = false" class="relative inline-block text-left">
     <div>
         <span class="rounded-md shadow-sm">
-            <button @click="open = !open" type="button" class="inline-flex justify-center w-full rounded-md border-gray-300 px-4 py-2 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 dark:bg-gray-700 dark:text-gray-400 dark:border-0" id="options-menu" aria-haspopup="true" x-bind:aria-expanded="open" aria-expanded="true">
+            <button @click="open = !open" type="button" class="inline-flex justify-center w-full rounded-md border-gray-300 px-4 py-2 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none active:text-gray-800 transition ease-in-out duration-150 dark:bg-gray-700 dark:text-gray-400 dark:border-0" id="options-menu" aria-haspopup="true" x-bind:aria-expanded="open" aria-expanded="true">
                 {{ $label }}
 
                 <svg class="-mr-1 ml-2 h-5 w-5" x-description="Heroicon name: chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
