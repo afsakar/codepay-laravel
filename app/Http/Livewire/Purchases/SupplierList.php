@@ -144,7 +144,7 @@ class SupplierList extends Component
         $query = Supplier::query()
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
             ->when($this->filters['search'], fn($query, $search) => $query
-                ->where('name', 'like', '%'.$search.'%'));
+                ->where('name', 'like', '%'.$search.'%'))->with('expense');
         return $this->applySorting($query);
     }
 

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Revenue extends Model
+class Expense extends Model
 {
     use HasFactory;
 
@@ -17,7 +17,7 @@ class Revenue extends Model
 
     protected $fillable = [
         'account_id',
-        'customer_id',
+        'supplier_id',
         'category_id',
         'company_id',
         'description',
@@ -32,7 +32,7 @@ class Revenue extends Model
     ];
 
     protected $appends = [
-        'income_category',
+        'expense_category',
     ];
 
     public function getAmountWithCurrencyAttribute()
@@ -50,17 +50,17 @@ class Revenue extends Model
     public function getSumAmountWithCurrencyAttribute()
     {
         return $this->account->currency_status == "after"
-            ? number_format($this->where('customer_id', $this->customer_id)->sum('amount'), 2)." ".$this->account->currency->symbol
-            : $this->account->currency->symbol." ".number_format($this->where('customer_id', $this->customer_id)->sum('amount'), 2);
+            ? number_format($this->where('supplier_id', $this->supplier_id)->sum('amount'), 2)." ".$this->account->currency->symbol
+            : $this->account->currency->symbol." ".number_format($this->where('supplier_id', $this->supplier_id)->sum('amount'), 2);
     }
 
     public function getSumTimesWithExchangeRateAttribute()
     {
-        $customers = $this->where('customer_id', $this->customer_id)->get();
+        $suppliers = $this->where('supplier_id', $this->supplier_id)->get();
 
         $summer = 0;
-        foreach ($customers as $customer) {
-            $summer += $customer->amount * $customer->exchange_rate;
+        foreach ($suppliers as $supplier) {
+            $summer += $supplier->amount * $supplier->exchange_rate;
         }
         return number_format($summer, 2).' TL';
     }
@@ -75,14 +75,14 @@ class Revenue extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function customer()
+    public function supplier()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-    public function getIncomeCategoryAttribute()
+    public function getExpenseCategoryAttribute()
     {
-        return Category::where('type', 'income')->get();
+        return Category::where('type', 'expense')->get();
     }
 
 }

@@ -130,6 +130,14 @@ class CompanyList extends Component
         $this->useCachedRows();
     }
 
+    public function toggleSwitch($id)
+    {
+        $company = Company::find($id);
+        $company->status == "active" ? $company->status = "inactive" : $company->status = "active";
+        $company->save();
+        $this->notify('Company status updated successfully.');
+    }
+
     public function resetFilters()
     {
         $this->reset('filters');

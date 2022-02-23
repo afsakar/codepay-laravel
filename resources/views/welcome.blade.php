@@ -48,6 +48,19 @@
                 */
             @endphp
 
+            <br>
+            <br>
+            <div>
+                <x-input.toggle id="id-1" label="Switch Button" />
+                <br>
+                <br>
+                <x-input.toggle id="id-2" label="Toggle Button" />
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+
         </x-card>
 
         {{ currency_rates('USD')['selling'] }}

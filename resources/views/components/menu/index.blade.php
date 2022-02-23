@@ -53,6 +53,7 @@
             <x-menu.menu-item active="purchases" title="Purchases" methodFrom="togglePurchasesMenu" methodTo="isPurchasesMenuOpen" permission="purchases">
                 <x-slot name="submenus">
                     <x-menu.sub-menu-item :route="route('suppliers')" :title="__('Suppliers')" permission="suppliers" />
+                    <x-menu.sub-menu-item :route="route('expenses')" :title="__('Expenses')" permission="expenses" />
                 </x-slot>
                 <x-slot name="icon">
                     <x-heroicon-o-truck class="h-5 w-5" />

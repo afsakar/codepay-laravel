@@ -4,8 +4,8 @@
 
 <div class="flex items-center">
     <div class="m-auto translate-y-1/2">
-        <x-card class="shadow-xl">
-            <div class="p-16">
+        <x-card class="shadow-xl md:min-w-[400px]">
+            <div class="p-6">
                 <div class="flex items-center justify-center">
                     <img src="{{ asset('assets/logo.png') }}" class="h-20 w-auto dark:hidden">
                     <img src="{{ asset('assets/logo-dark.png') }}" class="h-20 w-auto hidden dark:block">
@@ -31,6 +31,13 @@
                         {{ __('Continue') }}
                         <x-heroicon-s-arrow-right class="inline-block w-4 h-4 ml-2"/>
                     </x-button>
+
+                    <div class="flex items-center justify-center">
+                        <x-button.link :url="route('companies')" class="mt-4 dark:text-gray-400">
+                            {{ __('Add new company') }}
+                        </x-button.link>
+                    </div>
+
                 </form>
             </div>
         </x-card>

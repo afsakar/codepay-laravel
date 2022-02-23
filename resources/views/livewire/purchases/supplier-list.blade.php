@@ -134,7 +134,7 @@
                             {{ $supplier->tax_number != "" ? $supplier->tax_number : "-" }}
                         </x-table.cell>
                         <x-table.cell>
-                            Balance
+                            {{ $supplier->expense[0]->sum_times_with_exchange_rate ?? number_format(0,2).' TL' }}
                         </x-table.cell>
                         <x-table.cell>
                             <x-badge :color="$supplier->status_color">

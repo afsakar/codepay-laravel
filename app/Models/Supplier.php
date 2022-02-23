@@ -35,4 +35,9 @@ class Supplier extends Model
             'inactive' => 'red',
         ][$this->status];
     }
+
+    public function expense()
+    {
+        return $this->hasMany(Expense::class, 'supplier_id');
+    }
 }

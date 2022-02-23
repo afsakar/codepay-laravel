@@ -1,3 +1,35 @@
-### TODO'S;
- - [ ] Add Currency Status in Currencies Model and fix Account Model
- - [ ] 
+<style>
+    img[alt=logo] { 
+        float: right;
+        width: auto; 
+        height: 40px; 
+    }
+</style>
+
+# CodePay Pre-Accounting System <img height="40" alt="logo" src="https://i.imgur.com/VannA3L.png">
+<hr>
+
+**CodePay** is an application where individuals or small businesses can follow their own pre-accounting transactions on the basis of official and unofficial transactions.
+
+## What can be done with CodePay?
+
+* Income-expense tracking,
+* Credit summary for customer and supplier on one page,
+* Notification by popup for upcoming payments / events,
+* Account statements
+
+
+### Features;
+* Adding bank and cash accounts,
+* Ability to take account statement printouts,
+* Adding purchased products and services,
+* Adding customer and supplier accounts,
+* To be able to edit and add purchase and sales invoices,
+* Adding special payments to invoices,
+* Adding forward-looking transactions,
+* To be able to follow the events or meetings added via the calendar application,
+* Giving special permissions to each user with advanced user authorization,
+* Adding more than one language, editing words
+
+## Licence
+CodePay is open-sourced software licensed under the [MIT license.](https://github.com/afsakar/codepay/blob/main/LICENSE)

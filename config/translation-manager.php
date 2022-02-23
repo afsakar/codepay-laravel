@@ -46,7 +46,10 @@ return [
      *        'de',
      *    )
      */
-    'exclude_langs'  => [],
+    'exclude_langs'  => [
+        'tr',
+        'en',
+    ],
 
     /**
      * Export translations with keys output alphabetically.

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Sales;
+namespace App\Http\Livewire\Purchases;
 
 use Carbon\Carbon;
+use App\Models\Expense;
 use App\Models\Account;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
-use App\Models\Revenue;
-use App\Models\Customer;
+use App\Models\Supplier;
 use App\Models\Currency;
 use App\Models\Category;
 use App\Exports\AccountsExport;
@@ -18,12 +18,12 @@ use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithToastNotification;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 
-class RevenueList extends Component
+class ExpenseList extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
 
-    public Revenue $editing;
-    public Revenue $detail;
+    public Expense $editing;
+    public Expense $detail;
 
     public $acc;
     public $amount;
@@ -31,8 +31,8 @@ class RevenueList extends Component
     public $account;
     public $accounts;
     public $category;
-    public $customer;
-    public $customers;
+    public $supplier;
+    public $suppliers;
     public $categories;
     public $currencies;
     public $currency_status;
@@ -51,7 +51,7 @@ class RevenueList extends Component
         'search' => "",
         'type' => "",
         'category_id' => "",
-        'customer_id' => "",
+        'supplier_id' => "",
         'amount-min' => null,
         'amount-max' => null,
         'date-min' => null,
@@ -62,7 +62,7 @@ class RevenueList extends Component
     {
         return [
             'editing.account_id' => 'required',
-            'editing.customer_id' => 'required',
+            'editing.supplier_id' => 'required',
             'editing.category_id' => 'required',
             'editing.company_id' => 'required',
             'editing.description' => 'nullable',
@@ -77,7 +77,7 @@ class RevenueList extends Component
     {
         return [
             'editing.account_id' => __('Account'),
-            'editing.customer_id' => __('Customer'),
+            'editing.supplier_id' => __('Supplier'),
             'editing.category_id' => __('Category'),
             'editing.description' => __('Description'),
             'editing.amount' => __('Amount'),
@@ -89,21 +89,21 @@ class RevenueList extends Component
 
     public function mount()
     {
-        $this->editing = $this->makeBlankRevenue();
+        $this->editing = $this->makeBlankExpense();
         $this->accounts = Account::where('status', 'active')->get();
-        $this->customers = Customer::where('status', 'active')->get();
-        $this->categories = Category::where('type', 'income')->get();
-        $this->detail = $this->makeBlankRevenue();
+        $this->suppliers = Supplier::where('status', 'active')->get();
+        $this->categories = Category::where('type', 'expense')->get();
+        $this->detail = $this->makeBlankExpense();
     }
 
-    public function makeBlankRevenue()
+    public function makeBlankExpense()
     {
-        return Revenue::make([
+        return Expense::make([
             'type' => '',
             'account_id' => '',
-            'customer_id' => '',
-            'category_id' => '',
+            'supplier_id' => '',
             'company_id' => get_company_info()->id,
+            'category_id' => '',
             'description' => '',
             'amount' => '',
             'exchange_rate' => '',
@@ -112,10 +112,10 @@ class RevenueList extends Component
     }
 
     /* Editing / Creating / Deleting / Exporting */
-    public function edit(Revenue $revenue)
+    public function edit(Expense $expense)
     {
         $this->useCachedRows();
-        if($this->editing->isNot($revenue)) $this->editing = $revenue;
+        if($this->editing->isNot($expense)) $this->editing = $expense;
         $this->editingModal = true;
         $this->symbol = Currency::where('id', $this->editing->account->currency_id)->first()->symbol;
         $this->currency_status = Account::where('id', $this->editing->account_id)->first()->currency_status;
@@ -125,7 +125,7 @@ class RevenueList extends Component
     {
         $this->useCachedRows();
         $this->createMode = true;
-        if($this->editing->getKey()) $this->editing = $this->makeBlankRevenue();
+        if($this->editing->getKey()) $this->editing = $this->makeBlankExpense();
         $this->editingModal = true;
     }
 
@@ -146,7 +146,7 @@ class RevenueList extends Component
     {
         $this->editingModal = false;
         $this->createMode = false;
-        $this->makeBlankRevenue();
+        $this->makeBlankExpense();
         $this->resetValidation();
         $this->acc = null;
         $this->symbol = null;
@@ -166,21 +166,21 @@ class RevenueList extends Component
         $this->selected = [];
     }
 
-    public function toggleDetailModal(Revenue $revenue)
+    public function toggleDetailModal(Expense $expense)
     {
-        $this->detail = $revenue;
+        $this->detail = $expense;
         $this->detailModal = true;
-        $this->customer = $revenue->customer;
-        $this->account = $revenue->account;
-        $this->category = $revenue->category;
-        $this->amount = $revenue->getAmountWithCurrencyAttribute();
+        $this->supplier = $expense->supplier;
+        $this->account = $expense->account;
+        $this->category = $expense->category;
+        $this->amount = $expense->getAmountWithCurrencyAttribute();
     }
 
     public function closeDetailModal()
     {
         $this->detailModal = false;
-        $this->detail = $this->makeBlankRevenue();
-        $this->customer = "";
+        $this->detail = $this->makeBlankExpense();
+        $this->supplier = "";
         $this->account = "";
         $this->category = "";
         $this->amount = "";
@@ -192,7 +192,7 @@ class RevenueList extends Component
         $this->acc = $acc;
         $this->symbol = $acc->currency->symbol;
         $this->currency_status = $acc->currency_status;
-        $this->editing->exchange_rate = in_array($this->acc->currency->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency->code)['buying'] : 1) : 1;
+        $this->editing->exchange_rate = in_array($this->acc->currency->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency->code)['selling'] : 1) : 1;
 
     }
 
@@ -213,14 +213,14 @@ class RevenueList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Revenue::query()
+        $query = Expense::query()
             ->when($this->filters['type'], fn($query, $type) => $query->where('type', $type))
             ->when($this->filters['amount-min'], fn($query, $amount) => $query->where('amount', '>=', $amount))
             ->when($this->filters['amount-max'], fn($query, $amount) => $query->where('amount', '<=', $amount))
             ->when($this->filters['date-min'], fn($query, $due_at) => $query->where('due_at', '>=', Carbon::parse($due_at)))
             ->when($this->filters['date-max'], fn($query, $due_at) => $query->where('due_at', '<=', Carbon::parse($due_at)))
             ->when($this->filters['category_id'], fn($query, $category_id) => $query->where('category_id', $category_id))
-            ->when($this->filters['customer_id'], fn($query, $customer_id) => $query->where('customer_id', $customer_id))
+            ->when($this->filters['supplier_id'], fn($query, $supplier_id) => $query->where('supplier_id', $supplier_id))
             ->when($this->filters['search'], fn($query, $search) => $query->where('description', 'like', '%'.$search.'%'))->orderBy('due_at', 'desc');
         return $this->applySorting($query);
     }
@@ -234,8 +234,8 @@ class RevenueList extends Component
 
     public function render()
     {
-        return view('livewire.sales.revenue-list', [
-            'revenues' => $this->rows
+        return view('livewire.purchases.expense-list', [
+            'expenses' => $this->rows
         ]);
     }
 }

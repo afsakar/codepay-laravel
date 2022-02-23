@@ -145,6 +145,17 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Expenses',
+                'gate' => 'expenses',
+                'description' => 'Expense Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [

@@ -11,10 +11,15 @@
 
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
+            @if(session()->get('company_id') == null)
+                <x-button.link :url="route('company.select')" class="flex items-center justify-between text-sm font-medium leading-5 dark:text-gray-400 mr-4">
+                    <x-heroicon-o-arrow-left class="h-5 w-5 mr-1" /> <span>{{ __('Go back') }}</span>
+                </x-button.link>
+            @endif
             @empty(!$selected)
                 @permission('companies.delete')
                 <x-dropdown :label="__('Bulk Actions')">
-                    <x-dropdown.item  type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
+                    <x-dropdown.item type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                         <span>{{ __('Delete') }}</span>
                     </x-dropdown.item>
                 </x-dropdown>
@@ -50,9 +55,9 @@
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
                         @permission('companies.delete')
                         <x-table.column class="pr-0 w-8">
-                            @if($companies->count() != 0)
-                            <x-input.checkbox wire:model="selectPage" />
-                            @endif
+{{--                            @if($companies->count() != 0)--}}
+{{--                            <x-input.checkbox wire:model="selectPage" />--}}
+{{--                            @endif--}}
                         </x-table.column>
                         @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
@@ -87,7 +92,9 @@
                     <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $company->id }}">
                         @permission('companies.delete')
                         <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $company->id }}" />
+                            @if(session()->get('company_id') != $company->id)
+                                <x-input.checkbox wire:model="selected" value="{{ $company->id }}" />
+                            @endif
                         </x-table.cell>
                         @endpermission
                         <x-table.cell>
@@ -100,9 +107,7 @@
                             {{ $company->tax_number != "" ? $company->tax_number : $company->tc_number }}
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$company->status_color">
-                                {{ __(App\Models\Company::STATUS[$company->status]) }}
-                            </x-badge>
+                            <x-input.toggle wire:click="toggleSwitch({{$company->id}})" :active="$company->status == 'active'" />
                         </x-table.cell>
                         <x-table.cell title="{{ $company->created_at }}">
                             {{ $company->created_at->diffForHumans() }}

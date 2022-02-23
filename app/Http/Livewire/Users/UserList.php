@@ -96,6 +96,7 @@ class UserList extends Component
                 'name' => $this->editing->name,
                 'email' => $this->editing->email,
                 'password' => Hash::make($this->editing->king),
+                'email_verified_at' => Carbon::now(),
                 'role_id' => $this->editing->role_id,
             ];
 
@@ -118,6 +119,7 @@ class UserList extends Component
             $this->editing->king_confirmation = "";
         }
         $this->editingModal = false;
+        $this->makeBlankUser();
     }
 
     public function close()
@@ -142,6 +144,7 @@ class UserList extends Component
         $this->editingModal = false;
         $this->createMode = false;
         $this->selected = [];
+        $this->makeBlankUser();
     }
 
     /* Editing / Creating / Deleting / Exporting */

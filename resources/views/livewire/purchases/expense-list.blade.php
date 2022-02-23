@@ -1,12 +1,12 @@
 <div x-data="{ showFilters: false,  openFilters() { this.showFilters = ! this.showFilters } }" class="w-full overflow-x-auto">
     <x-slot name="header">
-        {{__('Revenues')}}
+        {{__('Expenses')}}
     </x-slot>
 
     {{-- Header --}}
     <h4 class="flex items-center justify-between my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
         <div class="flex items-center justify-between">
-            {{__('Revenues')}}
+            {{__('Expenses')}}
             <x-button x-on:click="openFilters" wire:click="toggleFilters"
                       class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 dark:text-gray-400 border border-transparent rounded-lg focus:outline-none">
                 <template x-if="showFilters">
@@ -21,7 +21,7 @@
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
             @empty(!$selected)
-                @permission('revenues.delete')
+                @permission('expenses.delete')
                 <x-dropdown :label="__('Bulk Actions')">
                     <x-dropdown.item type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
                         <span>{{ __('Delete') }}</span>
@@ -29,7 +29,7 @@
                 </x-dropdown>
                 @endpermission
             @endempty
-            @permission('revenues.create')
+            @permission('expenses.create')
             <x-button wire:click="create"
                       class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
                 <x-heroicon-o-plus class="h-5 w-5 mr-1"/>
@@ -46,7 +46,7 @@
                 <x-input.group inline for="filter-type" :label="__('Type')">
                     <x-input.select id="filter-type" wire:model="filters.type">
                         <option value="" disabled>{{ __('Select Type...') }}</option>
-                        @foreach (App\Models\Revenue::TYPES as $key => $value)
+                        @foreach (App\Models\Expense::TYPES as $key => $value)
                             <option value="{{ $key }}">{{ __($value) }}</option>
                         @endforeach
                     </x-input.select>
@@ -71,11 +71,11 @@
             </div>
 
             <div class="md:w-1/2 pl-2 space-y-4">
-                <x-input.group inline for="filter-customer_id" :label="__('Customer')">
-                    <x-input.select id="filter-customer_id" wire:model="filters.customer_id">
-                        <option value="" disabled>{{ __('Select Customer...') }}</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                <x-input.group inline for="filter-supplier_id" :label="__('Supplier')">
+                    <x-input.select id="filter-supplier_id" wire:model="filters.supplier_id">
+                        <option value="" disabled>{{ __('Select Supplier...') }}</option>
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                         @endforeach
                     </x-input.select>
                 </x-input.group>
@@ -95,7 +95,7 @@
         <x-card>
             {{-- Search Area --}}
             <div class="grid grid-cols-2 gap-4 py-4 dark:text-gray-400 dark:bg-gray-800">
-                <x-input.text wire:model="filters.search" placeholder="Search Revenues..."/>
+                <x-input.text wire:model="filters.search" placeholder="Search Expenses..."/>
 
                 <div class="flex justify-end">
                     <x-input.select wire:model="perPage" id="perPage">
@@ -111,7 +111,7 @@
                 <x-slot name="head">
                     <x-table.row
                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
-                        @permission('revenues.delete')
+                        @permission('expenses.delete')
                         <x-table.column class="pr-0 w-8">
                             <x-input.checkbox wire:model="selectPage"/>
                         </x-table.column>
@@ -122,15 +122,15 @@
                                         wire:click="sortBy('amount')">{{ __('Amount') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['exchange_rate'] ?? null"
                                         wire:click="sortBy('exchange_rate')">{{ __('Exchange Rate') }}</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['customer_id'] ?? null"
-                                        wire:click="sortBy('customer_id')">{{ __('Customer') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['supplier_id'] ?? null"
+                                        wire:click="sortBy('supplier_id')">{{ __('Supplier') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['description'] ?? null"
                                         wire:click="sortBy('description')">{{ __('Description') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['account'] ?? null"
                                         wire:click="sortBy('account')">{{ __('Account') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['type'] ?? null"
                                         wire:click="sortBy('type')">{{ __('Type') }}</x-table.column>
-                        @permission('revenues.update')
+                        @permission('expenses.update')
                         <x-table.column>{{ __('Actions') }}</x-table.column>
                         @endpermission
                     </x-table.row>
@@ -142,7 +142,7 @@
                             @unless ($selectAll)
                                 <div>
                                     <span>
-                                        {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $revenues->count(), 'totalCount' => $revenues->total()]) !!}
+                                        {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $expenses->count(), 'totalCount' => $expenses->total()]) !!}
                                     </span>
                                     <button wire:click="selectAll" class="text-blue-600 ml-1">
                                         {{ __('Select All') }}
@@ -150,52 +150,52 @@
                                 </div>
                             @else
                                 <span>
-                                    {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $revenues->total()]) !!}
+                                    {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $expenses->total()]) !!}
                                 </span>
                             @endif
                         </x-table.cell>
                     </x-table.row>
                 @endif
-                @forelse ($revenues as $revenue)
-                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $revenue->id }}">
-                        @permission('revenues.delete')
+                @forelse ($expenses as $expense)
+                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $expense->id }}">
+                        @permission('expenses.delete')
                         <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $revenue->id }}"/>
+                            <x-input.checkbox wire:model="selected" value="{{ $expense->id }}"/>
                         </x-table.cell>
                         @endpermission
                         <x-table.cell>
-                            {{ \Carbon\Carbon::parse($revenue->due_at)->format('d/m/Y') }}
+                            {{ \Carbon\Carbon::parse($expense->due_at)->format('d/m/Y') }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $revenue->amount_with_total_currency }}
+                            {{ $expense->amount_with_total_currency }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $revenue->exchange_rate }} ₺
+                            {{ $expense->exchange_rate }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $revenue->customer->name }}
+                            {{ $expense->supplier->name }}
                         </x-table.cell>
                         <x-table.cell class="whitespace-normal">
-                            {{ $revenue->description }}
+                            {{ $expense->description }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $revenue->account->name }}
+                            {{ $expense->account->name }}
                         </x-table.cell>
                         <x-table.cell>
                             <x-badge color="indigo">
-                                {{ __(App\Models\Revenue::TYPES[$revenue->type]) }}
+                                {{ __(App\Models\Expense::TYPES[$expense->type]) }}
                             </x-badge>
                         </x-table.cell>
                         <x-table.cell class="flex items-center items-center">
-                            @permission('revenues.update')
+                            @permission('expenses.update')
                             <div class="flex items-center space-x-4 text-sm">
-                                <x-button wire:click="edit({{ $revenue->id }})" aria-label="Edit"
+                                <x-button wire:click="edit({{ $expense->id }})" aria-label="Edit"
                                           class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                     <x-heroicon-o-pencil class="h-5 w-5"/>
                                 </x-button>
                             </div>
                             @endpermission
-                            <x-button wire:click="toggleDetailModal({{ $revenue->id }})" aria-label="Details"
+                            <x-button wire:click="toggleDetailModal({{ $expense->id }})" aria-label="Details"
                                       class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400 ml-4">
                                 <x-heroicon-o-document-text class="h-5 w-5"/>
                             </x-button>
@@ -212,7 +212,7 @@
                     </x-table.cell>
                 @endforelse
             </x-table>
-            {{ $revenues->links() }}
+            {{ $expenses->links() }}
         </x-card>
     </div>
 
@@ -221,9 +221,9 @@
         <x-jet-dialog-modal wire:model.defer="editingModal">
             <x-slot name="title">
                 @if(!$createMode)
-                    {{ __('Editing Revenue') }}
+                    {{ __('Editing Expense') }}
                 @else
-                    {{ __('Create New Revenue') }}
+                    {{ __('Create New Expense') }}
                 @endif
             </x-slot>
 
@@ -242,12 +242,12 @@
                         @endforeach
                     </x-input.select>
                 </x-input.group>
-                <x-input.group inline for="customers" :label="__('Customer')"
-                               :error="$errors->first('editing.customer_id')">
-                    <x-input.select id="customers" wire:model.defer="editing.customer_id">
-                        <option value="" disabled>{{ __('Select Customer...') }}</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}">{{ __($customer->name) }}</option>
+                <x-input.group inline for="suppliers" :label="__('Supplier')"
+                               :error="$errors->first('editing.supplier_id')">
+                    <x-input.select id="suppliers" wire:model.defer="editing.supplier_id">
+                        <option value="" disabled>{{ __('Select Supplier...') }}</option>
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}">{{ __($supplier->name) }}</option>
                         @endforeach
                     </x-input.select>
                 </x-input.group>
@@ -266,8 +266,7 @@
                 </x-input.group>
 
                 <x-input.group inline for="amount" :label="__('Amount')" :error="$errors->first('editing.amount')">
-                    <x-input.money wire:model.defer="editing.amount" id="amount" :currency="$symbol"
-                                   :position="$currency_status"/>
+                    <x-input.money wire:model.defer="editing.amount" id="amount" :currency="$symbol" :position="$currency_status"/>
                 </x-input.group>
 
                 <x-input.group inline for="exchange_rate" :label="__('Exchange Rate')" :error="$errors->first('editing.exchange_rate')">
@@ -277,7 +276,7 @@
                 <x-input.group inline for="filter-type" :label="__('Type')" :error="$errors->first('editing.type')">
                     <x-input.select id="filter-type" wire:model.defer="editing.type">
                         <option value="" disabled>{{ __('Select Type...') }}</option>
-                        @foreach (App\Models\Revenue::TYPES as $key => $value)
+                        @foreach (App\Models\Expense::TYPES as $key => $value)
                             <option value="{{ $key }}">{{ __($value) }}</option>
                         @endforeach
                     </x-input.select>
@@ -325,7 +324,7 @@
     {{-- Detail Modal --}}
     <x-jet-dialog-modal wire:model.defer="detailModal">
         <x-slot name="title">
-            {{ __('Revenue Details') }}
+            {{ __('Expense Details') }}
         </x-slot>
 
         <x-slot name="content">
@@ -333,7 +332,7 @@
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
                         <x-table.column multi-column>{{ __('Due Date')  }}</x-table.column>
-                        <x-table.column multi-column>{{ __('Customer')  }}</x-table.column>
+                        <x-table.column multi-column>{{ __('Supplier')  }}</x-table.column>
                         <x-table.column multi-column>{{ __('Category')  }}</x-table.column>
                         <x-table.column multi-column>{{ __('Amount')  }}</x-table.column>
                     </x-table.row>
@@ -343,7 +342,7 @@
                         {{ \Carbon\Carbon::parse($detail->due_at)->format('d/m/Y') }}
                     </x-table.cell>
                     <x-table.cell>
-                        {{ $customer->name?? "" }}
+                        {{ $supplier->name?? "" }}
                     </x-table.cell>
                     <x-table.cell>
                         {{ $category->name ?? "" }}

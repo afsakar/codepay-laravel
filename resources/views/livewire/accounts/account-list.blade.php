@@ -44,50 +44,38 @@
 
     <div class="w-full">
         {{-- Filters --}}
-        <div>
-            <div x-show="showFilters"
-            x-transition:enter="transition-all ease-in-out duration-300"
-            x-transition:enter-start="opacity-25 max-h-0"
-            x-transition:enter-end="opacity-100 max-h-xl"
-            x-transition:leave="transition-all ease-in-out duration-300"
-            x-transition:leave-start="opacity-100 max-h-xl"
-            x-transition:leave-end="opacity-0 max-h-0">
-                <x-card class="mb-4" color="bg-cool-gray-200 dark:bg-gray-700">
-                    <div class="md:flex md:relative">
-                        <div class="md:w-1/2 pr-2 space-y-4">
-                            <x-input.group inline for="filter-status" label="Status">
-                                <x-input.select id="filter-status" wire:model="filters.status">
-                                    <option value="" disabled>{{ __('Select Status...') }}</option>
-                                    @foreach (App\Models\Account::STATUS as $key => $value)
-                                        <option value="{{ $key }}">{{ __($value) }}</option>
-                                    @endforeach
-                                </x-input.select>
-                            </x-input.group>
+        <x-filter-bar>
+            <div class="md:w-1/2 pr-2 space-y-4">
+                <x-input.group inline for="filter-status" label="Status">
+                    <x-input.select id="filter-status" wire:model="filters.status">
+                        <option value="" disabled>{{ __('Select Status...') }}</option>
+                        @foreach (App\Models\Account::STATUS as $key => $value)
+                            <option value="{{ $key }}">{{ __($value) }}</option>
+                        @endforeach
+                    </x-input.select>
+                </x-input.group>
 
-                            <x-input.group inline for="filter-balance-min" label="Minimum Balance">
-                                <x-input.money wire:model.lazy="filters.balance-min" id="filter-balance-min" />
-                            </x-input.group>
+                <x-input.group inline for="filter-balance-min" label="Minimum Balance">
+                    <x-input.money wire:model.lazy="filters.balance-min" id="filter-balance-min" />
+                </x-input.group>
 
-                            <x-input.group inline for="filter-balance-max" label="Maximum Balance">
-                                <x-input.money wire:model.lazy="filters.balance-max" id="filter-balance-max" />
-                            </x-input.group>
-                        </div>
-
-                        <div class="md:w-1/2 pl-2 space-y-4">
-                            <x-input.group inline for="filter-date-min" label="Minimum Date">
-                                <x-input.date wire:model="filters.date-min" id="filter-date-min" placeholder="MM/DD/YYYY" />
-                            </x-input.group>
-
-                            <x-input.group inline for="filter-date-max" label="Maximum Date">
-                                <x-input.date wire:model="filters.date-max" id="filter-date-max" placeholder="MM/DD/YYYY" />
-                            </x-input.group>
-
-                            <x-button.link wire:click="resetFilters" class="md:absolute right-0 bottom-0 p-4 dark:text-gray-400">{{ __('Reset Filters') }}</x-button.link>
-                        </div>
-                    </div>
-                </x-card>
+                <x-input.group inline for="filter-balance-max" label="Maximum Balance">
+                    <x-input.money wire:model.lazy="filters.balance-max" id="filter-balance-max" />
+                </x-input.group>
             </div>
-        </div>
+
+            <div class="md:w-1/2 pl-2 space-y-4">
+                <x-input.group inline for="filter-date-min" label="Minimum Date">
+                    <x-input.date wire:model="filters.date-min" id="filter-date-min" placeholder="MM/DD/YYYY" />
+                </x-input.group>
+
+                <x-input.group inline for="filter-date-max" label="Maximum Date">
+                    <x-input.date wire:model="filters.date-max" id="filter-date-max" placeholder="MM/DD/YYYY" />
+                </x-input.group>
+
+                <x-button.link wire:click="resetFilters" class="md:absolute right-0 bottom-0 p-4 dark:text-gray-400">{{ __('Reset Filters') }}</x-button.link>
+            </div>
+        </x-filter-bar>
 
         <x-card>
             {{-- Search Area --}}
@@ -165,9 +153,7 @@
                         {{ $account->balance_with_currency }}
                     </x-table.cell>
                     <x-table.cell>
-                        <x-badge :color="$account->status_color">
-                            {{ __(App\Models\Account::STATUS[$account->status]) }}
-                        </x-badge>
+                        <x-input.toggle wire:click="toggleSwitch({{$account->id}})" :active="$account->status == 'active'" />
                     </x-table.cell>
                     <x-table.cell title="{{ $account->created_at }}">
                         {{ $account->created_at->diffForHumans() }}

@@ -4,6 +4,13 @@
     </x-slot>
 
     <div>
+        @if(session()->get('company_id') == null)
+            <div class="block mt-6 flex justify-end">
+                <x-button.link :url="route('company.select')" class="flex items-center justify-between text-sm font-medium leading-5 dark:text-gray-400 mr-4">
+                    <x-heroicon-o-arrow-left class="h-5 w-5 mr-1" /> <span>{{ __('Go back') }}</span>
+                </x-button.link>
+            </div>
+        @endif
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @if (Laravel\Fortify\Features::canUpdateProfileInformation())
                 @livewire('profile.update-profile-information-form')

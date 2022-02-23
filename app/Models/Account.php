@@ -37,13 +37,18 @@ class Account extends Model
     public function getBalanceWithCurrencyAttribute()
     {
         return $this->currency_status == "after"
-            ? number_format($this->revenue->sum('amount') + $this->balance, 2)." ".$this->currency->symbol
-            : $this->currency->symbol." ".number_format(($this->revenue->sum('amount') + $this->balance), 2);
+            ? number_format($this->revenue->sum('amount') + $this->balance - $this->expense->sum('amount'), 2)." ".$this->currency->symbol
+            : $this->currency->symbol." ".number_format(($this->revenue->sum('amount') + $this->balance - $this->expense->sum('amount')), 2);
     }
 
     public function revenue()
     {
         return $this->hasMany(Revenue::class, 'account_id');
+    }
+
+    public function expense()
+    {
+        return $this->hasMany(Expense::class, 'account_id');
     }
 
     public function currency()

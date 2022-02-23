@@ -9,6 +9,7 @@ use App\Http\Livewire\CompanySelect;
 use App\Http\Livewire\Currencies\CurrencyList;
 use App\Http\Livewire\Sales\CustomerList;
 use App\Http\Livewire\Roles\RoleList;
+use App\Http\Livewire\Purchases\ExpenseList;
 use App\Http\Livewire\Sales\RevenueList;
 use App\Http\Livewire\Purchases\SupplierList;
 use App\Http\Livewire\Users\UserList;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     Route::get('/company/select', CompanySelect::class)->name('company.select');
+    Route::get('/companies', CompanyList::class)->middleware('PermissionCheck:companies,read')->name('companies');
 
     Route::group(['middleware' => ['SelectCompany']], function () {
         Route::get('locale/{locale}', [MainController::class, 'makeLocale']);
@@ -50,8 +52,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/roles', RoleList::class)->middleware('PermissionCheck:roles,read')->name('roles');
         });
 
-        Route::get('/companies', CompanyList::class)->middleware('PermissionCheck:companies,read')->name('companies');
-
         Route::group(['prefix' => 'sales', 'middleware' => ['PermissionCheck:sales,read']], function (){
             Route::get('/customers', CustomerList::class)->middleware('PermissionCheck:customers,read')->name('customers');
             Route::get('/revenues', RevenueList::class)->middleware('PermissionCheck:revenues,read')->name('revenues');
@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
         Route::group(['prefix' => 'purchases', 'middleware' => ['PermissionCheck:purchases,read']], function (){
             Route::get('/suppliers', SupplierList::class)->middleware('PermissionCheck:suppliers,read')->name('suppliers');
+            Route::get('/expenses', ExpenseList::class)->middleware('PermissionCheck:expenses,read')->name('expenses');
         });
 
         Route::group(['prefix' => 'banks', 'middleware' => ['PermissionCheck:banks,read']], function (){

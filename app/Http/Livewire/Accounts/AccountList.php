@@ -151,6 +151,14 @@ class AccountList extends Component
     {
         $this->currencyPosition = $currency;
     }
+
+    public function toggleSwitch($id)
+    {
+        $account = Account::find($id);
+        $account->status == "active" ? $account->status = "inactive" : $account->status = "active";
+        $account->save();
+        $this->notify('Account status updated successfully.');
+    }
     /* Editing / Creating / Deleting / Exporting */
 
     public function toggleFilters()
@@ -170,12 +178,12 @@ class AccountList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Account::query()->withSum('revenue', 'amount')
+        $query = Account::query()->withSum('revenue', 'amount')->withSum('expense', 'amount')
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
             ->when($this->filters['balance-min'], fn($query, $balance) => $query
-                ->having(DB::raw('IF(count(revenue_sum_amount) > 0, SUM(revenue_sum_amount + balance), balance)'), '>=', $balance)->groupBy('id'))
+                ->having(DB::raw('IF(count(revenue_sum_amount) > 0 OR count(expense_sum_amount) > 0, SUM(revenue_sum_amount + balance - expense_sum_amount), balance)'), '>=', $balance)->groupBy('id'))
             ->when($this->filters['balance-max'], fn($query, $balance) => $query
-                ->having(DB::raw('IF(count(revenue_sum_amount) > 0, SUM(revenue_sum_amount + balance), balance)'), '<=', $balance)->groupBy('id'))
+                ->having(DB::raw('IF(count(revenue_sum_amount) > 0 OR count(expense_sum_amount) > 0, SUM(revenue_sum_amount + balance - expense_sum_amount), balance)'), '<=', $balance)->groupBy('id'))
             ->when($this->filters['date-min'], fn($query, $created_at) => $query->where('created_at', '>=', Carbon::parse($created_at)))
             ->when($this->filters['date-max'], fn($query, $created_at) => $query->where('created_at', '<=', Carbon::parse($created_at)))
             ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')->orWhere('owner', 'like', '%'.$search.'%'));

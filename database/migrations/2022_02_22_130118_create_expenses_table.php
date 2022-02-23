@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRevenuesTable extends Migration
+class CreateExpensesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateRevenuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('revenues', function (Blueprint $table) {
+        Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('customer_id')->default(0);
+            $table->unsignedBigInteger('supplier_id')->default(0);
             $table->unsignedBigInteger('category_id');
             $table->text('description')->nullable();
             $table->decimal('amount', 15, 2);
@@ -27,9 +27,9 @@ class CreateRevenuesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('revenues', function ($table) {
+        Schema::table('expenses', function ($table) {
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete(null);
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete(null);
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete(null);
             $table->foreign('category_id')->references('id')->on('categories')->onDelete(null);
             $table->foreign('company_id')->references('id')->on('companies')->onDelete(null);
         });
@@ -42,6 +42,6 @@ class CreateRevenuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('revenues');
+        Schema::dropIfExists('expanses');
     }
 }
