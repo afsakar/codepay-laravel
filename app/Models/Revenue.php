@@ -56,11 +56,11 @@ class Revenue extends Model
 
     public function getSumTimesWithExchangeRateAttribute()
     {
-        $customers = $this->where('customer_id', $this->customer_id)->get();
+        $revenues = $this->where('customer_id', $this->customer_id)->where('company_id', get_company_info()->id)->get();
 
         $summer = 0;
-        foreach ($customers as $customer) {
-            $summer += $customer->amount * $customer->exchange_rate;
+        foreach ($revenues as $revenue) {
+            $summer += $revenue->amount * $revenue->exchange_rate;
         }
         return number_format($summer, 2).' TL';
     }

@@ -7,11 +7,15 @@ use App\Http\Livewire\Categories\CategoryList;
 use App\Http\Livewire\Companies\CompanyList;
 use App\Http\Livewire\CompanySelect;
 use App\Http\Livewire\Currencies\CurrencyList;
+use App\Http\Livewire\Materials\MaterialCategoryList;
+use App\Http\Livewire\Materials\UnitList;
 use App\Http\Livewire\Sales\CustomerList;
 use App\Http\Livewire\Roles\RoleList;
 use App\Http\Livewire\Purchases\ExpenseList;
 use App\Http\Livewire\Sales\RevenueList;
 use App\Http\Livewire\Purchases\SupplierList;
+use App\Http\Livewire\Taxes\TaxList;
+use App\Http\Livewire\Taxes\WithHoldingList;
 use App\Http\Livewire\Users\UserList;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +49,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/translations', [Barryvdh\TranslationManager\Controller::class, "getIndex"])->middleware('PermissionCheck:translations,read')->name('translations');
             Route::get('/currencies', CurrencyList::class)->middleware('PermissionCheck:currencies,read')->name('currencies');
             Route::get('/categories', CategoryList::class)->middleware('PermissionCheck:categories,read')->name('categories');
+            Route::get('/taxes', TaxList::class)->middleware('PermissionCheck:taxes,read')->name('taxes');
+            Route::get('/with-holdings', WithHoldingList::class)->middleware('PermissionCheck:with-holdings,read')->name('with_holdings');
+        });
+
+        Route::group(['prefix' => 'material-management', 'middleware' => ['PermissionCheck:material-management,read']], function (){
+            Route::get('/units', UnitList::class)->middleware('PermissionCheck:units,read')->name('units');
+            Route::get('/material-categories', MaterialCategoryList::class)->middleware('PermissionCheck:material-category,read')->name('material_category');
         });
 
         Route::group(['prefix' => 'user-management', 'middleware' => ['PermissionCheck:user-management,read']], function (){

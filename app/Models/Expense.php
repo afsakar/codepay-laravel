@@ -56,7 +56,7 @@ class Expense extends Model
 
     public function getSumTimesWithExchangeRateAttribute()
     {
-        $suppliers = $this->where('supplier_id', $this->supplier_id)->get();
+        $suppliers = $this->where('supplier_id', $this->supplier_id)->where('company_id', get_company_info()->id)->get();
 
         $summer = 0;
         foreach ($suppliers as $supplier) {

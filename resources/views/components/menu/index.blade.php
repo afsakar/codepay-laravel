@@ -1,4 +1,4 @@
-<aside {{ $attributes->merge(['class' => 'z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
+<aside {{ $attributes->merge(['class' => 'z-20 hidden w-[18rem] overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
     <div class="py-4 text-gray-500 dark:text-gray-400">
         {{ $header }}
         <x-menu.menu-list class="mt-6">
@@ -13,9 +13,22 @@
                         <x-menu.sub-menu-item :route="route('translations')" :title="__('Translations')" permission="translations" />
                         <x-menu.sub-menu-item :route="route('currencies')" :title="__('Currencies')" permission="currencies" />
                         <x-menu.sub-menu-item :route="route('categories')" :title="__('Categories')" permission="categories" />
+                        <x-menu.sub-menu-item :route="route('taxes')" :title="__('Taxes')" permission="taxes" />
+                        <x-menu.sub-menu-item :route="route('with_holdings')" :title="__('Withholding Taxes')" permission="with-holdings" />
                     </x-slot>
                     <x-slot name="icon">
                         <x-heroicon-o-cog class="h-5 w-5" />
+                    </x-slot>
+                </x-menu.menu-item>
+            </x-menu.menu-list>
+            <x-menu.menu-list x-data="{ isMaterialsMenuOpen: false, toggleMaterialsMenu() { this.isMaterialsMenuOpen = ! this.isMaterialsMenuOpen } }">
+                <x-menu.menu-item active="material-management" :title="__('Material Management')" methodFrom="toggleMaterialsMenu" methodTo="isMaterialsMenuOpen" permission="material-management">
+                    <x-slot name="submenus">
+                        <x-menu.sub-menu-item :route="route('units')" :title="__('Units')" permission="units" />
+                        <x-menu.sub-menu-item :route="route('material_category')" :title="__('Material Categories')" permission="material-category" />
+                    </x-slot>
+                    <x-slot name="icon">
+                        <x-heroicon-o-tag class="h-5 w-5" />
                     </x-slot>
                 </x-menu.menu-item>
             </x-menu.menu-list>
@@ -30,6 +43,17 @@
                     </x-slot>
                 </x-menu.menu-item>
             </x-menu.menu-list>
+        </x-menu.menu-list>
+        <x-menu.menu-list x-data="{ isBanksMenuOpen: false, toggleBanksMenu() { this.isBanksMenuOpen = ! this.isBanksMenuOpen } }">
+            <x-menu.menu-item active="banks" :title="__('Banks')" methodFrom="toggleBanksMenu" methodTo="isBanksMenuOpen" permission="banks">
+                <x-slot name="submenus">
+                    <x-menu.sub-menu-item :route="route('accounts')" :title="__('Accounts')" permission="accounts" />
+                    <x-menu.sub-menu-item :route="route('accounts.types')" :title="__('Account Types')" permission="account_types" />
+                </x-slot>
+                <x-slot name="icon">
+                    <x-heroicon-o-cash class="h-5 w-5" />
+                </x-slot>
+            </x-menu.menu-item>
         </x-menu.menu-list>
         <x-menu.menu-list>
             <x-menu.menu-item :url="route('companies')" active="companies" :title="__('Companies')" permission="companies">
@@ -57,17 +81,6 @@
                 </x-slot>
                 <x-slot name="icon">
                     <x-heroicon-o-truck class="h-5 w-5" />
-                </x-slot>
-            </x-menu.menu-item>
-        </x-menu.menu-list>
-        <x-menu.menu-list x-data="{ isBanksMenuOpen: false, toggleBanksMenu() { this.isBanksMenuOpen = ! this.isBanksMenuOpen } }">
-            <x-menu.menu-item active="banks" :title="__('Banks')" methodFrom="toggleBanksMenu" methodTo="isBanksMenuOpen" permission="banks">
-                <x-slot name="submenus">
-                    <x-menu.sub-menu-item :route="route('accounts')" :title="__('Accounts')" permission="accounts" />
-                    <x-menu.sub-menu-item :route="route('accounts.types')" :title="__('Account Types')" permission="account_types" />
-                </x-slot>
-                <x-slot name="icon">
-                    <x-heroicon-o-cash class="h-5 w-5" />
                 </x-slot>
             </x-menu.menu-item>
         </x-menu.menu-list>

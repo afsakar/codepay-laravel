@@ -56,9 +56,11 @@
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Full Name') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['email'] ?? null" wire:click="sortBy('email')">{{ __('Email Address') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
-                        @permission('users.edit')
-                        <x-table.column>{{ __('Actions') }}</x-table.column>
-                        @endpermission
+                        <x-table.column>
+                            @permission('users.edit')
+                                {{ __('Actions') }}
+                            @endpermission
+                        </x-table.column>
                     </x-table.row>
                 </x-slot>
                 @if($selectPage)

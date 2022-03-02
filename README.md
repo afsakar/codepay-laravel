@@ -1,13 +1,8 @@
-<style>
-    img[alt=logo] { 
-        float: right;
-        width: auto; 
-        height: 40px; 
-    }
-</style>
+<div style="text-align: center;">
+<img height="80" alt="logo" src="https://i.imgur.com/VannA3L.png">
+</div>
 
-# CodePay Pre-Accounting System <img height="40" alt="logo" src="https://i.imgur.com/VannA3L.png">
-<hr>
+# CodePay Pre-Accounting System
 
 **CodePay** is an application where individuals or small businesses can follow their own pre-accounting transactions on the basis of official and unofficial transactions.
 

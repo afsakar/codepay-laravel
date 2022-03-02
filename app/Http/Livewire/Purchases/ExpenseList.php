@@ -213,7 +213,7 @@ class ExpenseList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Expense::query()
+        $query = Expense::query()->where('company_id', get_company_info()->id)
             ->when($this->filters['type'], fn($query, $type) => $query->where('type', $type))
             ->when($this->filters['amount-min'], fn($query, $amount) => $query->where('amount', '>=', $amount))
             ->when($this->filters['amount-max'], fn($query, $amount) => $query->where('amount', '<=', $amount))

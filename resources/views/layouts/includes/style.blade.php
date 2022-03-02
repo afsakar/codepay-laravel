@@ -10,3 +10,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Tagify -->
 <link href="https://unpkg.com/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+<style>
+    [type='checkbox']:checked,[type='radio']:checked{
+        background-size: auto!important;
+    }
+</style>

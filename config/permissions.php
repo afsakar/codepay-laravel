@@ -49,6 +49,60 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Taxes',
+                'gate' => 'taxes',
+                'description' => 'Tax Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+            [
+                'title' => 'Withholding Taxes',
+                'gate' => 'with-holdings',
+                'description' => 'Withholding Tax Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+        ]
+    ],
+    [
+        'title' => 'Material Management',
+        'gate' => 'material-management',
+        'description' => 'Material Management',
+        'permissions' => [
+            'read' => 'Read',
+        ],
+        'submenus' => [
+            [
+                'title' => 'Units',
+                'gate' => 'units',
+                'description' => '',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
+            [
+                'title' => 'Material Categories',
+                'gate' => 'material-category',
+                'description' => '',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [
