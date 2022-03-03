@@ -18,6 +18,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('name')->unique();
             $table->string('code', 3)->unique();
             $table->string('symbol')->unique();
+            $table->enum('position', ['after', 'before'])->default('after');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

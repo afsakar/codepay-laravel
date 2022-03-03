@@ -19,6 +19,7 @@ class Currency extends Model
         'code',
         'symbol',
         'status',
+        'position',
     ];
 
     public function getStatusColorAttribute()

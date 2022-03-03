@@ -78,6 +78,7 @@
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['code'] ?? null" wire:click="sortBy('code')">{{ __('Code') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['symbol'] ?? null" wire:click="sortBy('symbol')">{{ __('Symbol') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['position'] ?? null" wire:click="sortBy('position')">{{ __('Symbol Position') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['created_at'] ?? null" wire:click="sortBy('created_at')">{{ __('Created At') }}</x-table.column>
                         @permission('currencies.update')
@@ -87,7 +88,7 @@
                 </x-slot>
                 @if($selectPage)
                     <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
-                        <x-table.cell colspan="7">
+                        <x-table.cell colspan="8">
                             @unless ($selectAll)
                                 <div>
                                 <span>
@@ -122,6 +123,9 @@
                             {{ $currency->symbol }}
                         </x-table.cell>
                         <x-table.cell>
+                            <span class="capitalize">{{ $currency->position }}</span>
+                        </x-table.cell>
+                        <x-table.cell>
                             <x-badge :color="$currency->status_color">
                                 {{ __(App\Models\Currency::STATUS[$currency->status]) }}
                             </x-badge>
@@ -140,7 +144,7 @@
                         @endpermission
                     </x-table.row>
                 @empty
-                    <x-table.cell colspan="7" class="dark:text-gray-400 dark:bg-gray-700">
+                    <x-table.cell colspan="8" class="dark:text-gray-400 dark:bg-gray-700">
                         <div class="flex items-center justify-center text-gray-400">
                             <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
                         </div>
@@ -171,6 +175,12 @@
                 </x-input.group>
                 <x-input.group inline for="symbol" :label="__('Symbol')" :error="$errors->first('editing.symbol')">
                     <x-input.text wire:model.defer="editing.symbol" id="symbol" />
+                </x-input.group>
+                <x-input.group inline for="position" :label="__('Currency Position')">
+                    <x-input.select id="position" wire:model.defer="editing.position">
+                        <option value="after">{{ __("After") }}</option>
+                        <option value="before">{{ __("Before") }}</option>
+                    </x-input.select>
                 </x-input.group>
                 <x-input.group inline for="filter-status" :label="__('Status')">
                     <x-input.select id="filter-status" wire:model.defer="editing.status">

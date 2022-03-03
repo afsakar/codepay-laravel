@@ -103,6 +103,17 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Materials',
+                'gate' => 'materials',
+                'description' => '',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [

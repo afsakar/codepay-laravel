@@ -34,6 +34,7 @@ class CurrencyList extends Component
             'editing.code' => 'required|size:3|unique:currencies,code,'.$this->editing->id,
             'editing.symbol' => 'required|unique:currencies,symbol,'.$this->editing->id,
             'editing.status' => 'required',
+            'editing.position' => 'required|in:after,before',
         ];
     }
 
@@ -44,6 +45,7 @@ class CurrencyList extends Component
             'editing.code' => __('Code'),
             'editing.symbol' => __('Symbol'),
             'editing.status' => __('Status'),
+            'editing.position' => __('Position'),
         ];
     }
 
@@ -54,7 +56,7 @@ class CurrencyList extends Component
 
     public function makeBlankCurrency()
     {
-        return Currency::make(['status' => 'active']);
+        return Currency::make(['status' => 'active', 'position' => 'after']);
     }
 
     /* Editing / Creating / Deleting / Exporting */
@@ -84,6 +86,8 @@ class CurrencyList extends Component
             $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
+        $this->mount();
+        $this->render();
     }
 
     public function close()
@@ -106,6 +110,8 @@ class CurrencyList extends Component
         $this->selectAll = false;
         $this->selectPage = false;
         $this->selected = [];
+        $this->mount();
+        $this->render();
     }
 
     /* Editing / Creating / Deleting / Exporting */

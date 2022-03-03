@@ -1,4 +1,15 @@
-<aside {{ $attributes->merge(['class' => 'z-20 hidden w-[18rem] overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
+@php
+
+   $materials = Request::is("material-management/*") ? 'true' : 'false';
+   $settings = Request::is("settings/*") ? 'true' : 'false';
+   $users = Request::is("user-management/*") ? 'true' : 'false';
+   $banks = Request::is("banks/*") ? 'true' : 'false';
+   $sales = Request::is("sales/*") ? 'true' : 'false';
+   $purchases = Request::is("purchases/*") ? 'true' : 'false';
+
+@endphp
+
+<aside {{ $attributes->merge(['class' => 'z-20 hidden w-[18.5rem] overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0']) }}>
     <div class="py-4 text-gray-500 dark:text-gray-400">
         {{ $header }}
         <x-menu.menu-list class="mt-6">
@@ -7,7 +18,7 @@
                     <x-heroicon-o-home class="h-5 w-5" />
                 </x-slot>
             </x-menu.menu-item>
-            <x-menu.menu-list x-data="{ isSettingsMenuOpen: false, toggleSettingsMenu() { this.isSettingsMenuOpen = ! this.isSettingsMenuOpen } }">
+            <x-menu.menu-list x-data="{ isSettingsMenuOpen: {{ $settings }}, toggleSettingsMenu() { this.isSettingsMenuOpen = ! this.isSettingsMenuOpen } }">
                 <x-menu.menu-item active="settings" :title="__('Settings')" methodFrom="toggleSettingsMenu" methodTo="isSettingsMenuOpen" permission="settings">
                     <x-slot name="submenus">
                         <x-menu.sub-menu-item :route="route('translations')" :title="__('Translations')" permission="translations" />
@@ -21,18 +32,19 @@
                     </x-slot>
                 </x-menu.menu-item>
             </x-menu.menu-list>
-            <x-menu.menu-list x-data="{ isMaterialsMenuOpen: false, toggleMaterialsMenu() { this.isMaterialsMenuOpen = ! this.isMaterialsMenuOpen } }">
+            <x-menu.menu-list x-data="{ isMaterialsMenuOpen: {{ $materials }}, toggleMaterialsMenu() { this.isMaterialsMenuOpen = ! this.isMaterialsMenuOpen } }">
                 <x-menu.menu-item active="material-management" :title="__('Material Management')" methodFrom="toggleMaterialsMenu" methodTo="isMaterialsMenuOpen" permission="material-management">
                     <x-slot name="submenus">
                         <x-menu.sub-menu-item :route="route('units')" :title="__('Units')" permission="units" />
                         <x-menu.sub-menu-item :route="route('material_category')" :title="__('Material Categories')" permission="material-category" />
+                        <x-menu.sub-menu-item :route="route('materials')" :title="__('Materials')" permission="materials" />
                     </x-slot>
                     <x-slot name="icon">
                         <x-heroicon-o-tag class="h-5 w-5" />
                     </x-slot>
                 </x-menu.menu-item>
             </x-menu.menu-list>
-            <x-menu.menu-list x-data="{ isRoleAndPermissionsMenuOpen: false, toggleRoleAndPermissionsMenu() { this.isRoleAndPermissionsMenuOpen = ! this.isRoleAndPermissionsMenuOpen } }">
+            <x-menu.menu-list x-data="{ isRoleAndPermissionsMenuOpen: {{ $users }}, toggleRoleAndPermissionsMenu() { this.isRoleAndPermissionsMenuOpen = ! this.isRoleAndPermissionsMenuOpen } }">
                 <x-menu.menu-item active="user-management" :title="__('User Management')" methodFrom="toggleRoleAndPermissionsMenu" methodTo="isRoleAndPermissionsMenuOpen" permission="user-management">
                     <x-slot name="submenus">
                         <x-menu.sub-menu-item :route="route('users')" :title="__('Users')" permission="users" />
@@ -44,7 +56,7 @@
                 </x-menu.menu-item>
             </x-menu.menu-list>
         </x-menu.menu-list>
-        <x-menu.menu-list x-data="{ isBanksMenuOpen: false, toggleBanksMenu() { this.isBanksMenuOpen = ! this.isBanksMenuOpen } }">
+        <x-menu.menu-list x-data="{ isBanksMenuOpen: {{ $banks }}, toggleBanksMenu() { this.isBanksMenuOpen = ! this.isBanksMenuOpen } }">
             <x-menu.menu-item active="banks" :title="__('Banks')" methodFrom="toggleBanksMenu" methodTo="isBanksMenuOpen" permission="banks">
                 <x-slot name="submenus">
                     <x-menu.sub-menu-item :route="route('accounts')" :title="__('Accounts')" permission="accounts" />
@@ -62,7 +74,7 @@
                 </x-slot>
             </x-menu.menu-item>
         </x-menu.menu-list>
-        <x-menu.menu-list x-data="{ isSalesMenuOpen: false, toggleSalesMenu() { this.isSalesMenuOpen = ! this.isSalesMenuOpen } }">
+        <x-menu.menu-list x-data="{ isSalesMenuOpen: {{ $sales }}, toggleSalesMenu() { this.isSalesMenuOpen = ! this.isSalesMenuOpen } }">
             <x-menu.menu-item active="sales" title="Sales" methodFrom="toggleSalesMenu" methodTo="isSalesMenuOpen" permission="sales">
                 <x-slot name="submenus">
                     <x-menu.sub-menu-item :route="route('customers')" :title="__('Customers')" permission="customers" />
@@ -73,7 +85,7 @@
                 </x-slot>
             </x-menu.menu-item>
         </x-menu.menu-list>
-        <x-menu.menu-list x-data="{ isPurchasesMenuOpen: false, togglePurchasesMenu() { this.isPurchasesMenuOpen = ! this.isPurchasesMenuOpen } }">
+        <x-menu.menu-list x-data="{ isPurchasesMenuOpen: {{ $purchases }}, togglePurchasesMenu() { this.isPurchasesMenuOpen = ! this.isPurchasesMenuOpen } }">
             <x-menu.menu-item active="purchases" title="Purchases" methodFrom="togglePurchasesMenu" methodTo="isPurchasesMenuOpen" permission="purchases">
                 <x-slot name="submenus">
                     <x-menu.sub-menu-item :route="route('suppliers')" :title="__('Suppliers')" permission="suppliers" />

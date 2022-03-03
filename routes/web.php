@@ -8,6 +8,7 @@ use App\Http\Livewire\Companies\CompanyList;
 use App\Http\Livewire\CompanySelect;
 use App\Http\Livewire\Currencies\CurrencyList;
 use App\Http\Livewire\Materials\MaterialCategoryList;
+use App\Http\Livewire\Materials\MaterialList;
 use App\Http\Livewire\Materials\UnitList;
 use App\Http\Livewire\Sales\CustomerList;
 use App\Http\Livewire\Roles\RoleList;
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::group(['prefix' => 'material-management', 'middleware' => ['PermissionCheck:material-management,read']], function (){
             Route::get('/units', UnitList::class)->middleware('PermissionCheck:units,read')->name('units');
             Route::get('/material-categories', MaterialCategoryList::class)->middleware('PermissionCheck:material-category,read')->name('material_category');
+            Route::get('/materials', MaterialList::class)->middleware('PermissionCheck:materials,read')->name('materials');
         });
 
         Route::group(['prefix' => 'user-management', 'middleware' => ['PermissionCheck:user-management,read']], function (){

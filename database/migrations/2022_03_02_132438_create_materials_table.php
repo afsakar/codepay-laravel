@@ -23,6 +23,7 @@ class CreateMaterialsTable extends Migration
             $table->unsignedBigInteger('tax_id')->default(0);
             $table->unsignedBigInteger('material_category_id')->default(0);
             $table->unsignedBigInteger('unit_id')->default(0);
+            $table->unsignedBigInteger('currency_id')->default(1);
             $table->string('type')->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
@@ -34,6 +35,7 @@ class CreateMaterialsTable extends Migration
             $table->foreign('unit_id')->references('id')->on('units')->onDelete(null);
             $table->foreign('tax_id')->references('id')->on('taxes')->onDelete(null);
             $table->foreign('material_category_id')->references('id')->on('material_categories')->onDelete(null);
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete(null);
         });
     }
 
