@@ -168,17 +168,6 @@ return [
         ],
         'submenus' => [
             [
-                'title' => 'Customers',
-                'gate' => 'customers',
-                'description' => 'Customer Management',
-                'permissions' => [
-                    'create' => 'Create',
-                    'read' => 'Read',
-                    'update' => 'Update',
-                    'delete' => 'Delete'
-                ],
-            ],
-            [
                 'title' => 'Revenues',
                 'gate' => 'revenues',
                 'description' => 'Revenue Management',
@@ -211,17 +200,6 @@ return [
         ],
         'submenus' => [
             [
-                'title' => 'Suppliers',
-                'gate' => 'suppliers',
-                'description' => 'Supplier Management',
-                'permissions' => [
-                    'create' => 'Create',
-                    'read' => 'Read',
-                    'update' => 'Update',
-                    'delete' => 'Delete'
-                ],
-            ],
-            [
                 'title' => 'Expenses',
                 'gate' => 'expenses',
                 'description' => 'Expense Management',
@@ -233,6 +211,17 @@ return [
                 ],
             ],
         ]
+    ],
+    [
+        'title' => 'Corporations',
+        'gate' => 'corporations',
+        'description' => '',
+        'permissions' => [
+            'create' => 'Create',
+            'read' => 'Read',
+            'update' => 'Update',
+            'delete' => 'Delete'
+        ],
     ],
     [
         'title' => 'Banks',

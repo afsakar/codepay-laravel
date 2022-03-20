@@ -18,7 +18,7 @@ class Expense extends Model
 
     protected $fillable = [
         'account_id',
-        'supplier_id',
+        'corporation_id',
         'category_id',
         'company_id',
         'description',
@@ -54,22 +54,22 @@ class Expense extends Model
 
     public function getSumAmountWithCurrencyAttribute(): string
     {
-        $sumSupplierAmount = $this->where('supplier_id', $this->supplier_id)->sum('amount');
+        $sumCorporationAmount = $this->where('corporation_id', $this->corporation_id)->sum('amount');
 
         return $this->account()->first()->currency()->first()->position == "after"
-            ? number_format($sumSupplierAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
-            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumSupplierAmount, 2);
+            ? number_format($sumCorporationAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumCorporationAmount, 2);
     }
 
     public function getSumTimesWithExchangeRateAttribute(): string
     {
-        $suppliers = $this->where('supplier_id', $this->supplier_id)->where('company_id', get_company_info()->id)->get();
+        $corporations = $this->where('corporation_id', $this->corporation_id)->where('company_id', get_company_info()->id)->get();
 
         $summer = 0;
-        foreach ($suppliers as $supplier) {
-            $summer += $supplier->amount * $supplier->exchange_rate;
+        foreach ($corporations as $corporation) {
+            $summer += $corporation->amount * $corporation->exchange_rate;
         }
-        return number_format($summer, 2).' ₺';
+        return $summer;
     }
 
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -77,9 +77,9 @@ class Expense extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function supplier(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function corporation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id');
+        return $this->belongsTo(Corporation::class, 'corporation_id');
     }
 
     public function getExpenseCategoryAttribute()

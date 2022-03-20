@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSuppliersTable extends Migration
+class CreateCorporationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSuppliersTable extends Migration
      */
     public function up()
     {
-        Schema::create('suppliers', function (Blueprint $table) {
+        Schema::create('corporations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique()->nullable();
             $table->string('owner')->nullable();
@@ -25,6 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->string('tax_office')->nullable();
             $table->string('tax_number')->nullable()->unique();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -36,6 +37,6 @@ class CreateSuppliersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('suppliers');
+        Schema::dropIfExists('corporations');
     }
 }

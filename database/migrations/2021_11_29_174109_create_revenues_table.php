@@ -17,7 +17,7 @@ class CreateRevenuesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('customer_id')->default(0);
+            $table->unsignedBigInteger('corporation_id')->default(0);
             $table->unsignedBigInteger('category_id');
             $table->text('description')->nullable();
             $table->decimal('amount', 15, 2);
@@ -29,7 +29,7 @@ class CreateRevenuesTable extends Migration
 
         Schema::table('revenues', function ($table) {
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete(null);
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete(null);
+            $table->foreign('corporation_id')->references('id')->on('corporations')->onDelete(null);
             $table->foreign('category_id')->references('id')->on('categories')->onDelete(null);
             $table->foreign('company_id')->references('id')->on('companies')->onDelete(null);
         });

@@ -18,7 +18,7 @@ class Revenue extends Model
 
     protected $fillable = [
         'account_id',
-        'customer_id',
+        'corporation_id',
         'category_id',
         'company_id',
         'description',
@@ -40,46 +40,46 @@ class Revenue extends Model
         'income_category',
     ];
 
-    public function getAmountWithCurrencyAttribute()
+    public function getAmountWithCurrencyAttribute(): string
     {
         return number_format($this->amount * $this->exchange_rate, 2).' ₺';
     }
 
-    public function getAmountWithTotalCurrencyAttribute()
+    public function getAmountWithTotalCurrencyAttribute(): string
     {
         return $this->account()->first()->currency()->first()->status == "after"
             ? number_format($this->amount, 2)." ".$this->account()->first()->currency()->first()->symbol
             : $this->account()->first()->currency()->first()->symbol." ".number_format($this->amount, 2);
     }
 
-    public function getSumAmountWithCurrencyAttribute()
+    public function getSumAmountWithCurrencyAttribute(): string
     {
-        $sumCustomerAmount = $this->where('customer_id', $this->customer_id)->sum('amount');
+        $sumCorporationAmount = $this->where('corporation_id', $this->corporation_id)->sum('amount');
 
         return $this->account()->first()->currency()->first()->status == "after"
-            ? number_format($sumCustomerAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
-            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumCustomerAmount, 2);
+            ? number_format($sumCorporationAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumCorporationAmount, 2);
     }
 
-    public function getSumTimesWithExchangeRateAttribute()
+    public function getSumTimesWithExchangeRateAttribute(): string
     {
-        $revenues = $this->where('customer_id', $this->customer_id)->where('company_id', get_company_info()->id)->get();
+        $revenues = $this->where('corporation_id', $this->corporation_id)->where('company_id', get_company_info()->id)->get();
 
         $summer = 0;
         foreach ($revenues as $revenue) {
             $summer += $revenue->amount * $revenue->exchange_rate;
         }
-        return number_format($summer, 2).' ₺';
+        return $summer;
     }
 
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function customer()
+    public function corporation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Corporation::class, 'corporation_id');
     }
 
     public function getIncomeCategoryAttribute()

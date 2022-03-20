@@ -7,7 +7,7 @@ use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithToastNotification;
-use App\Models\Customer;
+use App\Models\Corporation;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\WithHolding;
@@ -23,7 +23,7 @@ class InvoiceList extends Component
     public $createMode = false;
     public $deleteModal = false;
     public $editingModal = false;
-    public $customers;
+    public $corporations;
     public $withholdings;
     public $withholding;
 
@@ -38,7 +38,7 @@ class InvoiceList extends Component
     {
         return [
             'editing.company_id' => 'required|exists:companies,id',
-            'editing.customer_id' => 'required|exists:customers,id',
+            'editing.corporation_id' => 'required|exists:corporations,id',
             'editing.withholding_id' => 'required|in:'.$this->withholding,
             'editing.status' => 'required|in:draft,paid,cancelled',
             'editing.issue_date' => 'required|date',
@@ -52,7 +52,7 @@ class InvoiceList extends Component
     public function validationAttributes()
     {
         return [
-            'editing.customer_id' => __('Customer'),
+            'editing.corporation_id' => __('Corporation'),
             'editing.withholding_id' => __('Withholding Tax Rate'),
             'editing.issue_date' => __('Issue Date'),
             'editing.notes' => __('Notes'),
@@ -66,7 +66,7 @@ class InvoiceList extends Component
     public function mount()
     {
         $this->editing = $this->makeBlankInvoice();
-        $this->customers = Customer::where('status', 'active')->get();
+        $this->corporations = Corporation::where('status', 'active')->get();
         $this->withholdings = WithHolding::where('status', 'active')->get();
         $this->withholding = WithHolding::query()->select('id')->pluck('id')->implode(',');
     }
@@ -76,7 +76,7 @@ class InvoiceList extends Component
         return Invoice::make([
             'status' => 'draft',
             'company_id' => get_company_info()->id,
-            'customer_id' => "",
+            'corporation_id' => "",
             'withholding_id' => 0,
             'issue_date' => null,
             'notes' => "",
@@ -160,7 +160,7 @@ class InvoiceList extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Invoice::query()->with('customer')->with('withholding')->where('company_id', get_company_info()->id)
+        $query = Invoice::query()->with('corporation')->with('withholding')->where('company_id', get_company_info()->id)
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
             ->when($this->filters['search'], fn($query, $search) => $query->where('invoice_number', 'like', '%'.$search.'%'))->orderBy('issue_date', 'desc');
         return $this->applySorting($query);

@@ -19,7 +19,7 @@ class Invoice extends Model
 
     public $fillable = [
         'company_id',
-        'customer_id',
+        'corporation_id',
         'withholding_id',
         'issue_date',
         'notes',
@@ -46,9 +46,9 @@ class Invoice extends Model
         ][$this->status];
     }
 
-    public function customer()
+    public function corporation()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Corporation::class, 'corporation_id');
     }
 
     public function withholding()
@@ -66,7 +66,7 @@ class Invoice extends Model
         $sum = 0;
         foreach ($this->invoiceItems as $invoiceItem) {
             $tax = $invoiceItem->material->tax->rate;
-            $withholding = $this->withholding->rate > 0 ? ($invoiceItem->price * ($this->withholding->rate / 100) * $invoiceItem->quantity * ($tax / 100)) : 0;
+            $withholding = $this->withholding->rate > 0 ? ($invoiceItem->price * ($this->withholding->rate / 10) * $invoiceItem->quantity * ($tax / 100)) : 0;
             $sum += (($invoiceItem->price * $invoiceItem->quantity * (1 + $tax / 100)) - $withholding);
         }
         return $sum - $this->discount;
@@ -87,7 +87,7 @@ class Invoice extends Model
         $sum = 0;
         foreach ($this->invoiceItems as $invoiceItem) {
             $tax = $invoiceItem->material->tax->rate;
-            $withholding = $this->withholding->rate > 0 ? ($invoiceItem->price * ($this->withholding->rate / 100) * $invoiceItem->quantity * ($tax / 100)) : 0;
+            $withholding = $this->withholding->rate > 0 ? ($invoiceItem->price * ($this->withholding->rate / 10) * $invoiceItem->quantity * ($tax / 100)) : 0;
             $sum += $withholding;
         }
         return $sum;

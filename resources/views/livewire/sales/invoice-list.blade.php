@@ -89,7 +89,7 @@
                         </x-table.column>
                         @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['invoice_number'] ?? null" wire:click="sortBy('invoice_number')">{{ __('Invoice Number') }}</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['customer_id'] ?? null" wire:click="sortBy('customer_id')">{{ __('Customer') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['corporation_id'] ?? null" wire:click="sortBy('corporation_id')">{{ __('Customer') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['issue_date'] ?? null" wire:click="sortBy('issue_date')">{{ __('Issue Date') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['withholding_id'] ?? null" wire:click="sortBy('withholding_id')">{{ __('Withholding') }}</x-table.column>
@@ -132,7 +132,7 @@
                             {{ $invoice->invoice_number }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $invoice->customer->name }}
+                            {{ $invoice->corporation->name }}
                         </x-table.cell>
                         <x-table.cell>
                             <x-badge :color="$invoice->status_color">
@@ -203,11 +203,11 @@
                     <x-input.text wire:model.defer="editing.invoice_number" id="invoice_number" />
                 </x-input.group>
                 <div class="grid grid-cols-2 gap-4">
-                    <x-input.group inline for="customer_id" :label="__('Customer')" :error="$errors->first('editing.customer_id')">
-                        <x-input.select id="customer_id" wire:model.defer="editing.customer_id">
+                    <x-input.group inline for="corporation_id" :label="__('Customer')" :error="$errors->first('editing.corporation_id')">
+                        <x-input.select id="corporation_id" wire:model.defer="editing.corporation_id">
                             <option value="" disabled>{{ __('Select Customer...') }}</option>
-                            @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ __($customer->name) }}</option>
+                            @foreach ($corporations as $corporation)
+                                <option value="{{ $corporation->id }}">{{ __($corporation->name) }}</option>
                             @endforeach
                         </x-input.select>
                     </x-input.group>
@@ -233,6 +233,9 @@
                 </x-input.group>
                 <x-input.group inline for="notes" :label="__('Notes')" :error="$errors->first('editing.notes')">
                     <x-input.textarea wire:model.defer="editing.notes" id="notes" />
+                </x-input.group>
+                <x-input.group inline for="discount" :label="__('Discount')" :error="$errors->first('editing.discount')">
+                    <x-input.money wire:model.defer="editing.discount" id="discount" />
                 </x-input.group>
             </x-slot>
 

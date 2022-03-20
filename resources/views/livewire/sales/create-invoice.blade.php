@@ -41,11 +41,11 @@
                         </ul>
 
                         <ul>
-                            <li class="font-bold">{{ $invoice->customer->name }}</li>
-                            <li>{{ $invoice->customer->address }}</li>
-                            <li>{{ phoneFormat($invoice->customer->tel_number == null ? $invoice->customer->gsm_number : $invoice->customer->tel_number) }}</li>
-                            <li>{{ $invoice->customer->tax_office }} {{ $invoice->customer->tax_number ? ', '.$invoice->customer->tax_number : "" }}</li>
-                            <li>{{ $invoice->customer->email }}</li>
+                            <li class="font-bold">{{ $invoice->corporation->name }}</li>
+                            <li>{{ $invoice->corporation->address }}</li>
+                            <li>{{ phoneFormat($invoice->corporation->tel_number == null ? $invoice->corporation->gsm_number : $invoice->corporation->tel_number) }}</li>
+                            <li>{{ $invoice->corporation->tax_office }} {{ $invoice->corporation->tax_number ? ', '.$invoice->corporation->tax_number : "" }}</li>
+                            <li>{{ $invoice->corporation->email }}</li>
                         </ul>
                     </div>
                     <div class="grid grid-cols-1 gap-4 text-center">

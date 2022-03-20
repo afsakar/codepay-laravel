@@ -16,7 +16,7 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('customer_id')->default(0);
+            $table->unsignedBigInteger('corporation_id')->default(0);
             $table->unsignedBigInteger('withholding_id')->default(0);
             $table->date('issue_date');
             $table->text('notes')->nullable();
@@ -28,7 +28,7 @@ class CreateInvoicesTable extends Migration
 
         Schema::table('invoices', function ($table) {
             $table->foreign('company_id')->references('id')->on('companies')->onDelete(null);
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete(null);
+            $table->foreign('corporation_id')->references('id')->on('corporations')->onDelete(null);
             $table->foreign('withholding_id')->references('id')->on('with_holdings')->onDelete(null);
         });
     }

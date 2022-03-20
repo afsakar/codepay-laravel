@@ -71,11 +71,11 @@
             </div>
 
             <div class="md:w-1/2 pl-2 space-y-4">
-                <x-input.group inline for="filter-supplier_id" :label="__('Supplier')">
-                    <x-input.select id="filter-supplier_id" wire:model="filters.supplier_id">
-                        <option value="" disabled>{{ __('Select Supplier...') }}</option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                <x-input.group inline for="filter-corporation_id" :label="__('Corporation')">
+                    <x-input.select id="filter-corporation_id" wire:model="filters.corporation_id">
+                        <option value="" disabled>{{ __('Select Corporation...') }}</option>
+                        @foreach ($corporations as $corporation)
+                            <option value="{{ $corporation->id }}">{{ $corporation->name }}</option>
                         @endforeach
                     </x-input.select>
                 </x-input.group>
@@ -122,8 +122,8 @@
                                         wire:click="sortBy('amount')">{{ __('Amount') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['exchange_rate'] ?? null"
                                         wire:click="sortBy('exchange_rate')">{{ __('Exchange Rate') }}</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['supplier_id'] ?? null"
-                                        wire:click="sortBy('supplier_id')">{{ __('Supplier') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['corporation_id'] ?? null"
+                                        wire:click="sortBy('corporation_id')">{{ __('Corporation') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['description'] ?? null"
                                         wire:click="sortBy('description')">{{ __('Description') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['account'] ?? null"
@@ -173,7 +173,7 @@
                             {{ $expense->exchange_rate }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $expense->supplier->name }}
+                            {{ $expense->corporation->name }}
                         </x-table.cell>
                         <x-table.cell class="whitespace-normal">
                             {{ $expense->description }}
@@ -242,12 +242,12 @@
                         @endforeach
                     </x-input.select>
                 </x-input.group>
-                <x-input.group inline for="suppliers" :label="__('Supplier')"
-                               :error="$errors->first('editing.supplier_id')">
-                    <x-input.select id="suppliers" wire:model.defer="editing.supplier_id">
-                        <option value="" disabled>{{ __('Select Supplier...') }}</option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}">{{ __($supplier->name) }}</option>
+                <x-input.group inline for="suppliers" :label="__('Corporation')"
+                               :error="$errors->first('editing.corporation_id')">
+                    <x-input.select id="suppliers" wire:model.defer="editing.corporation_id">
+                        <option value="" disabled>{{ __('Select Corporation...') }}</option>
+                        @foreach ($corporations as $corporation)
+                            <option value="{{ $corporation->id }}">{{ __($corporation->name) }}</option>
                         @endforeach
                     </x-input.select>
                 </x-input.group>
@@ -332,7 +332,7 @@
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
                         <x-table.column multi-column>{{ __('Due Date')  }}</x-table.column>
-                        <x-table.column multi-column>{{ __('Supplier')  }}</x-table.column>
+                        <x-table.column multi-column>{{ __('Corporation')  }}</x-table.column>
                         <x-table.column multi-column>{{ __('Category')  }}</x-table.column>
                         <x-table.column multi-column>{{ __('Amount')  }}</x-table.column>
                     </x-table.row>
@@ -342,7 +342,7 @@
                         {{ \Carbon\Carbon::parse($detail->due_at)->format('d/m/Y') }}
                     </x-table.cell>
                     <x-table.cell>
-                        {{ $supplier->name?? "" }}
+                        {{ $corporation->name?? "" }}
                     </x-table.cell>
                     <x-table.cell>
                         {{ $category->name ?? "" }}

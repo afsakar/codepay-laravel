@@ -7,7 +7,7 @@ use App\Models\Expense;
 use App\Models\Account;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
-use App\Models\Supplier;
+use App\Models\Corporation;
 use App\Models\Currency;
 use App\Models\Category;
 use App\Exports\AccountsExport;
@@ -31,8 +31,8 @@ class ExpenseList extends Component
     public $account;
     public $accounts;
     public $category;
-    public $supplier;
-    public $suppliers;
+    public $corporation;
+    public $corporations;
     public $categories;
     public $currencies;
     public $currency_status;
@@ -51,7 +51,7 @@ class ExpenseList extends Component
         'search' => "",
         'type' => "",
         'category_id' => "",
-        'supplier_id' => "",
+        'corporation_id' => "",
         'amount-min' => null,
         'amount-max' => null,
         'date-min' => null,
@@ -62,7 +62,7 @@ class ExpenseList extends Component
     {
         return [
             'editing.account_id' => 'required',
-            'editing.supplier_id' => 'required',
+            'editing.corporation_id' => 'required',
             'editing.category_id' => 'required',
             'editing.company_id' => 'required',
             'editing.description' => 'nullable',
@@ -77,7 +77,7 @@ class ExpenseList extends Component
     {
         return [
             'editing.account_id' => __('Account'),
-            'editing.supplier_id' => __('Supplier'),
+            'editing.corporation_id' => __('Corporation'),
             'editing.category_id' => __('Category'),
             'editing.description' => __('Description'),
             'editing.amount' => __('Amount'),
@@ -91,7 +91,7 @@ class ExpenseList extends Component
     {
         $this->editing = $this->makeBlankExpense();
         $this->accounts = Account::where('status', 'active')->get();
-        $this->suppliers = Supplier::where('status', 'active')->get();
+        $this->corporations = Corporation::where(['status' => 'active'])->get();
         $this->categories = Category::where('type', 'expense')->get();
         $this->detail = $this->makeBlankExpense();
     }
@@ -101,7 +101,7 @@ class ExpenseList extends Component
         return Expense::make([
             'type' => '',
             'account_id' => '',
-            'supplier_id' => '',
+            'corporation_id' => '',
             'company_id' => get_company_info()->id,
             'category_id' => '',
             'description' => '',
@@ -170,7 +170,7 @@ class ExpenseList extends Component
     {
         $this->detail = $expense;
         $this->detailModal = true;
-        $this->supplier = $expense->supplier()->first();
+        $this->corporation = $expense->corporation()->first();
         $this->account = $expense->account()->first();
         $this->category = $expense->category()->first();
         $this->amount = $expense->getAmountWithCurrencyAttribute();
@@ -180,7 +180,7 @@ class ExpenseList extends Component
     {
         $this->detailModal = false;
         $this->detail = $this->makeBlankExpense();
-        $this->supplier = "";
+        $this->corporation = "";
         $this->account = "";
         $this->category = "";
         $this->amount = "";
@@ -192,7 +192,7 @@ class ExpenseList extends Component
         $this->acc = $acc;
         $this->symbol = $acc->currency()->first()->symbol;
         $this->currency_status = $acc->currency_status;
-        $this->editing->exchange_rate = in_array($this->acc->currency()->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency()->code)['selling'] : 1) : 1;
+        $this->editing->exchange_rate = in_array($this->acc->currency()->first()->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency()->first()->code)['selling'] : 1) : 1;
 
     }
 
@@ -220,7 +220,7 @@ class ExpenseList extends Component
             ->when($this->filters['date-min'], fn($query, $due_at) => $query->where('due_at', '>=', Carbon::parse($due_at)))
             ->when($this->filters['date-max'], fn($query, $due_at) => $query->where('due_at', '<=', Carbon::parse($due_at)))
             ->when($this->filters['category_id'], fn($query, $category_id) => $query->where('category_id', $category_id))
-            ->when($this->filters['supplier_id'], fn($query, $supplier_id) => $query->where('supplier_id', $supplier_id))
+            ->when($this->filters['corporation_id'], fn($query, $corporation_id) => $query->where('corporation_id', $corporation_id))
             ->when($this->filters['search'], fn($query, $search) => $query->where('description', 'like', '%'.$search.'%'))->orderBy('due_at', 'desc');
         return $this->applySorting($query);
     }

@@ -63,10 +63,16 @@
                 </x-slot>
             </x-menu.menu-item>
         </x-menu.menu-list>
+        <x-menu.menu-list>
+            <x-menu.menu-item :url="route('corporations')" active="corporations" :title="__('Corporations')" permission="corporations">
+                <x-slot name="icon">
+                    <x-heroicon-o-users class="h-5 w-5" />
+                </x-slot>
+            </x-menu.menu-item>
+        </x-menu.menu-list>
         <x-menu.menu-list x-data="{ isSalesMenuOpen: {{ toggle_menu('sales') }}, toggleSalesMenu() { this.isSalesMenuOpen = ! this.isSalesMenuOpen } }">
             <x-menu.menu-item active="sales" title="Sales" methodFrom="toggleSalesMenu" methodTo="isSalesMenuOpen" permission="sales">
                 <x-slot name="submenus">
-                    <x-menu.sub-menu-item :route="route('customers')" :title="__('Customers')" permission="customers" />
                     <x-menu.sub-menu-item :route="route('revenues')" :title="__('Revenues')" permission="revenues" />
                     <x-menu.sub-menu-item :route="route('invoices')" :title="__('Invoices')" permission="invoices" />
                 </x-slot>
@@ -78,7 +84,6 @@
         <x-menu.menu-list x-data="{ isPurchasesMenuOpen: {{ toggle_menu('purchases') }}, togglePurchasesMenu() { this.isPurchasesMenuOpen = ! this.isPurchasesMenuOpen } }">
             <x-menu.menu-item active="purchases" title="Purchases" methodFrom="togglePurchasesMenu" methodTo="isPurchasesMenuOpen" permission="purchases">
                 <x-slot name="submenus">
-                    <x-menu.sub-menu-item :route="route('suppliers')" :title="__('Suppliers')" permission="suppliers" />
                     <x-menu.sub-menu-item :route="route('expenses')" :title="__('Expenses')" permission="expenses" />
                 </x-slot>
                 <x-slot name="icon">

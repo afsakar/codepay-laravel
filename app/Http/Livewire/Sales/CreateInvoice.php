@@ -51,7 +51,7 @@ class CreateInvoice extends Component
                 $this->totalPrice += $item->price * $item->quantity;
             }
 
-            $this->grandTotal = $this->totalPrice + $this->taxTotal - ($this->taxTotal * $this->withholding->rate / 100) - $this->discount;
+            $this->grandTotal = $this->totalPrice + $this->taxTotal - ($this->taxTotal * $this->withholding->rate / 10) - $this->discount;
 
         } else {
             $this->items = collect([$this->makeBlankItem()]);

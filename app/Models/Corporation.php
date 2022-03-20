@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Corporation extends Model
 {
     use HasFactory;
 
     const STATUS = [
         'active' => 'Active',
         'inactive' => 'Inactive',
+    ];
+
+    const TYPES = [
+        'customer' => 'Customer',
+        'supplier' => 'Supplier',
     ];
 
     protected $fillable = [
@@ -25,7 +30,7 @@ class Customer extends Model
         'tax_office',
         'tax_number',
         'status',
-        'balance',
+        'type',
     ];
 
     public function getStatusColorAttribute()
@@ -38,6 +43,11 @@ class Customer extends Model
 
     public function revenue()
     {
-        return $this->hasMany(Revenue::class, 'customer_id');
+        return $this->hasMany(Revenue::class, 'corporation_id');
+    }
+
+    public function expense()
+    {
+        return $this->hasMany(Expense::class, 'corporation_id');
     }
 }
