@@ -107,9 +107,8 @@ class UnitList extends Component
         $this->render();
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(Unit $unit)
     {
-        $unit = Unit::find($id);
         $unit->status == "active" ? $unit->status = "inactive" : $unit->status = "active";
         $unit->save();
         $this->notify('Unit status updated successfully.');

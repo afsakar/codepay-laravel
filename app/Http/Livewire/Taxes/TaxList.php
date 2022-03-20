@@ -109,9 +109,8 @@ class TaxList extends Component
         $this->render();
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(Tax $tax)
     {
-        $tax = Tax::find($id);
         $tax->status == "active" ? $tax->status = "inactive" : $tax->status = "active";
         $tax->save();
         $this->notify('Tax status updated successfully.');

@@ -189,6 +189,17 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Invoices',
+                'gate' => 'invoices',
+                'description' => 'Invoice Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [

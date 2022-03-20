@@ -157,9 +157,8 @@ class MaterialList extends Component
         $this->render();
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(Material $material)
     {
-        $material = Material::find($id);
         $material->status == "active" ? $material->status = "inactive" : $material->status = "active";
         $material->save();
         $this->notify('Material status updated successfully.');
@@ -168,10 +167,10 @@ class MaterialList extends Component
     }
     /* Editing / Creating / Deleting / Exporting */
 
-    public function changeCurrency($id)
+    public function changeCurrency(Currency $currency)
     {
-        $this->symbol = Currency::where('id', $id)->first()->symbol;
-        $this->position = Currency::where('id', $id)->first()->position;
+        $this->symbol = $currency->symbol;
+        $this->position = $currency->position;
         $this->render();
     }
 

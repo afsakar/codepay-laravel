@@ -152,9 +152,8 @@ class AccountList extends Component
         $this->currencyPosition = $currency;
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(Account $account)
     {
-        $account = Account::find($id);
         $account->status == "active" ? $account->status = "inactive" : $account->status = "active";
         $account->save();
         $this->notify('Account status updated successfully.');

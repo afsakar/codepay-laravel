@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToCreatedUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WithHolding extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToCreatedUser;
+
+    protected $table = 'with_holdings';
 
     const STATUS = [
         'active' => 'Active',
@@ -27,10 +30,5 @@ class WithHolding extends Model
             'active' => 'green',
             'inactive' => 'red',
         ][$this->status];
-    }
-
-    public function getCreatedUserAttribute()
-    {
-        return User::where('id', $this->created_by)->get() ?? null;
     }
 }

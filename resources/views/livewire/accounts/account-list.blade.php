@@ -147,7 +147,7 @@
                         {{ $account->description }}
                     </x-table.cell>
                     <x-table.cell>
-                        {{ $account->account_type->name }}
+                        {{ $account->account_type()->first()->name }}
                     </x-table.cell>
                     <x-table.cell>
                         {{ $account->balance_with_currency }}

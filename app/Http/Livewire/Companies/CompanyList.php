@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Companies;
 
 use App\Models\Company;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use App\Http\Livewire\DataTable\WithSorting;
@@ -10,16 +12,18 @@ use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Livewire\DataTable\WithToastNotification;
+use Livewire\WithFileUploads;
 
 class CompanyList extends Component
 {
-    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows, WithToastNotification, WithFileUploads;
 
     public Company $editing;
     public $createMode = false;
     public $deleteModal = false;
     public $singleDelete = false;
     public $editingModal = false;
+    public $logo;
 
     protected $listeners = [
         'save',
@@ -43,6 +47,7 @@ class CompanyList extends Component
             'editing.tax_office' => 'nullable|min:3',
             'editing.tax_number' => 'nullable|numeric|unique:companies,tax_number,'.$this->editing->id,
             'editing.status' => 'required',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
@@ -60,6 +65,7 @@ class CompanyList extends Component
             'editing.address' => __('Address'),
             'editing.tax_office' => __('Tax Office'),
             'editing.tax_number' => __('Tax Number'),
+            'logo' => __('Logo'),
         ];
     }
 
@@ -92,6 +98,12 @@ class CompanyList extends Component
     public function save()
     {
         $this->validate();
+        if(!empty($this->logo)) {
+            Storage::delete('public/'.$this->editing['logo']);
+            $random = Str::random(10);
+            $this->editing['logo'] = 'company-logos/' . $random . '.' . $this->logo->extension();
+            $this->logo->storeAs('company-logos/', $random . '.' . $this->logo->extension(), 'public');
+        }
         $this->editing->save();
         if($this->createMode) {
             $this->createMode = false;
@@ -100,11 +112,13 @@ class CompanyList extends Component
             $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
+        $this->logo = null;
     }
 
     public function close()
     {
         $this->editingModal = false;
+        $this->logo = null;
         $this->createMode = false;
         $this->makeBlankCompany();
         $this->resetValidation();
@@ -123,6 +137,13 @@ class CompanyList extends Component
         $this->selectPage = false;
         $this->selected = [];
     }
+
+    public function deleteImage(Company $company)
+    {
+        $this->logo = null;
+        if($this->editing->isNot($company)) $this->editing = $company;
+        $this->editing['logo'] = null;
+    }
     /* Editing / Creating / Deleting / Exporting */
 
     public function toggleFilters()
@@ -130,9 +151,8 @@ class CompanyList extends Component
         $this->useCachedRows();
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(Company $company)
     {
-        $company = Company::find($id);
         $company->status == "active" ? $company->status = "inactive" : $company->status = "active";
         $company->save();
         $this->notify('Company status updated successfully.');

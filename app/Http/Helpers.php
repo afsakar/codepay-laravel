@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Company;
+use Carbon\Carbon;
 
 if (!function_exists('get_gravatar')) {
 
@@ -76,6 +77,11 @@ if (!function_exists('permission_check')) {
 }
 
 if(!function_exists('exchange_rates')){
+    /**
+     * @param $currency
+     * @param $type
+     * @return mixed
+     */
     function exchange_rates($currency, $type = "satis")
     {
         $URL = json_decode(file_get_contents('https://api.genelpara.com/embed/para-birimleri.json'), true);
@@ -84,6 +90,10 @@ if(!function_exists('exchange_rates')){
 }
 
 if(!function_exists('currency_rates')){
+    /**
+     * @param $code
+     * @return array
+     */
     function currency_rates($code)
     {
         $xmlString = file_get_contents('https://www.tcmb.gov.tr/kurlar/today.xml', true);
@@ -117,8 +127,57 @@ if(!function_exists('currency_rates')){
 }
 
 if(!function_exists('get_company_info')){
+    /**
+     * @return mixed
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     function get_company_info()
     {
         return Company::where('id', session()->get('company_id'))->first();
+    }
+}
+
+if(!function_exists('toggle_menu')){
+    /**
+     * @param $gate
+     * @return string
+     */
+    function toggle_menu($gate)
+    {
+        return Request::is($gate."/*") ? 'true' : 'false';
+    }
+}
+
+if (!function_exists('dateFormat')){
+    /**
+     * @param $value
+     * @return string
+     */
+    function dateFormat($value, $format = 'd/m/Y'): string
+    {
+        return Carbon::parse($value)->format($format);
+    }
+}
+
+if (!function_exists('phoneFormat')){
+    /**
+     * @param $value
+     * @return string
+     */
+    function phoneFormat($value): string
+    {
+        return "0 (".substr($value, 0, 3) . ') ' . substr($value, 3, 3) . ' ' . substr($value, 6, 4);
+    }
+}
+
+if(!function_exists('defaultImage')){
+    /**
+     * @param $value
+     * @return string
+     */
+    function defaultImage(): string
+    {
+        return asset('assets/default.png');
     }
 }

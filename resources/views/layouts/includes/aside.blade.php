@@ -5,4 +5,3 @@
     </span>
   </x-slot>
 </x-menu>
-@include('layouts.includes.mobile-sidebar')

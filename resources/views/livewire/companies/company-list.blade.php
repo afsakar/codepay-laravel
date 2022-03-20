@@ -18,11 +18,9 @@
             @endif
             @empty(!$selected)
                 @permission('companies.delete')
-                <x-dropdown :label="__('Bulk Actions')">
-                    <x-dropdown.item type="button" wire:click="$set('deleteModal', true)" class="flex items-center space-x-2">
-                        <span>{{ __('Delete') }}</span>
-                    </x-dropdown.item>
-                </x-dropdown>
+                    <x-button wire:click="$set('deleteModal', true)" class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 text-red-600 bg-red-100 border border-transparent rounded-lg focus:outline-none">
+                        <span class="flex items-center justify-between"><x-heroicon-o-trash class="h-5 w-5 mr-1" /> {{ __("Delete") }}</span>
+                    </x-button>
                 @endpermission
             @endempty
             @permission('companies.create')
@@ -60,6 +58,7 @@
 {{--                            @endif--}}
                         </x-table.column>
                         @endpermission
+                        <x-table.column></x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['owner'] ?? null" wire:click="sortBy('owner')">{{ __('Owner') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['tax_number'] ?? null" wire:click="sortBy('tax_number')">{{ __('Tax / ID Number') }}</x-table.column>
@@ -72,7 +71,7 @@
                 </x-slot>
                 @if($selectPage)
                     <x-table.row class="text-gray-600 dark:text-gray-400 dark:bg-gray-700 text-center text-sm bg-cool-gray-100">
-                        <x-table.cell colspan="7">
+                        <x-table.cell colspan="8">
                             @unless ($selectAll)
                                 <div>
                                 <span>
@@ -97,6 +96,9 @@
                             @endif
                         </x-table.cell>
                         @endpermission
+                        <x-table.cell>
+                            <img src="{{ $company->company_logo }}" alt="{{ $company->name }}" class="h-[3rem] w-auto">
+                        </x-table.cell>
                         <x-table.cell>
                             {{ $company->name }}
                         </x-table.cell>
@@ -123,7 +125,7 @@
                         @endpermission
                     </x-table.row>
                 @empty
-                    <x-table.cell colspan="7" class="dark:text-gray-400 dark:bg-gray-700">
+                    <x-table.cell colspan="8" class="dark:text-gray-400 dark:bg-gray-700">
                         <div class="flex items-center justify-center text-gray-400">
                             <x-heroicon-o-search class="h-5 w-5 mr-2" /> <span class="text-medium py-6 text-lg">{{ __('No records found matching your search term or no records have been added yet!') }}</span>
                         </div>
@@ -146,6 +148,23 @@
             </x-slot>
 
             <x-slot name="content">
+                <div class="md:grid md:grid-cols-2 md:space-x-4">
+                    <div class="flex items-start">
+                        @if($logo)
+                            <img src="{{ $logo->temporaryUrl() }}" alt="{{ $editing['name'] }}" class="w-[10rem] py-2">
+                        @else
+                            <img src="{{ $editing['company_logo'] }}" alt="{{ $editing['name'] }}" class="w-[10rem] py-2">
+                            @if($logo != "" || $editing['logo'])
+                                <x-button wire:click.prevent="deleteImage({{ $editing['id'] }})" class="mt-2 bg-red-200 mt-2 p-1 rounded text-red-700 ml-auto">
+                                    <x-heroicon-o-trash class="h-5 w-5" />
+                                </x-button>
+                            @endif
+                        @endif
+                    </div>
+                    <x-input.group inline for="logo" :label="__('Logo')" :error="$errors->first('editing.logo')">
+                        <x-input.text type="file" wire:model.defer="logo" id="logo" class="pt-2" />
+                    </x-input.group>
+                </div>
                 <div class="md:grid md:grid-cols-2 md:space-x-4">
                     <x-input.group inline for="name" :label="__('Name')" :error="$errors->first('editing.name')">
                         <x-input.text wire:model.defer="editing.name" id="name" />

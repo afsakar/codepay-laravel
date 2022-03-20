@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToAccount;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToAccount;
 
     const TYPES = [
         'formal' => 'Formal',
@@ -31,6 +32,10 @@ class Expense extends Model
         'due_at',
     ];
 
+    protected $casts = [
+        'due_at' => 'date:m/d/Y',
+    ];
+
     protected $appends = [
         'expense_category',
     ];
@@ -42,19 +47,21 @@ class Expense extends Model
 
     public function getAmountWithTotalCurrencyAttribute()
     {
-        return $this->account->currency_status == "after"
-            ? number_format($this->amount, 2)." ".$this->account->currency->symbol
-            : $this->account->currency->symbol." ".number_format($this->amount, 2);
+        return $this->account()->first()->currency()->first()->position == "after"
+            ? number_format($this->amount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($this->amount, 2);
     }
 
-    public function getSumAmountWithCurrencyAttribute()
+    public function getSumAmountWithCurrencyAttribute(): string
     {
-        return $this->account->currency_status == "after"
-            ? number_format($this->where('supplier_id', $this->supplier_id)->sum('amount'), 2)." ".$this->account->currency->symbol
-            : $this->account->currency->symbol." ".number_format($this->where('supplier_id', $this->supplier_id)->sum('amount'), 2);
+        $sumSupplierAmount = $this->where('supplier_id', $this->supplier_id)->sum('amount');
+
+        return $this->account()->first()->currency()->first()->position == "after"
+            ? number_format($sumSupplierAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumSupplierAmount, 2);
     }
 
-    public function getSumTimesWithExchangeRateAttribute()
+    public function getSumTimesWithExchangeRateAttribute(): string
     {
         $suppliers = $this->where('supplier_id', $this->supplier_id)->where('company_id', get_company_info()->id)->get();
 
@@ -62,20 +69,15 @@ class Expense extends Model
         foreach ($suppliers as $supplier) {
             $summer += $supplier->amount * $supplier->exchange_rate;
         }
-        return number_format($summer, 2).' TL';
+        return number_format($summer, 2).' ₺';
     }
 
-    public function account()
-    {
-        return $this->belongsTo(Account::class, 'account_id');
-    }
-
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function supplier()
+    public function supplier(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }

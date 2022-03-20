@@ -30,7 +30,7 @@ class WithHoldingList extends Component
     public function rules()
     {
         return [
-            'editing.name' => 'required|min:3|unique:with_holding,name,'.$this->editing->id,
+            'editing.name' => 'required|min:3|unique:with_holdings,name,'.$this->editing->id,
             'editing.rate' => 'required|numeric',
             'editing.status' => 'required|in:active,inactive',
             'editing.created_by' => 'required|exists:users,id',

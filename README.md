@@ -4,6 +4,8 @@
 
 # CodePay Pre-Accounting System
 
+**Announcement**: This repo is under development.
+
 **CodePay** is an application where individuals or small businesses can follow their own pre-accounting transactions on the basis of official and unofficial transactions.
 
 ## What can be done with CodePay?

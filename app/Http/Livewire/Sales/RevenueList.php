@@ -140,6 +140,8 @@ class RevenueList extends Component
             $this->notify('Record has been updated successfully!');
         }
         $this->editingModal = false;
+        $this->mount();
+        $this->render();
     }
 
     public function close()
@@ -164,6 +166,8 @@ class RevenueList extends Component
         $this->selectAll = false;
         $this->selectPage = false;
         $this->selected = [];
+        $this->mount();
+        $this->render();
     }
 
     public function toggleDetailModal(Revenue $revenue)

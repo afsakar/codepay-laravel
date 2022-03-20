@@ -1389,11 +1389,11 @@ select {
 .h-20 {
 	height: 5rem;
 }
-.h-screen {
-	height: 100vh;
-}
 .h-full {
 	height: 100%;
+}
+.h-screen {
+	height: 100vh;
 }
 .h-3 {
 	height: 0.75rem;
@@ -1457,6 +1457,9 @@ select {
 }
 .w-3 {
 	width: 0.75rem;
+}
+.w-\[18\.5rem\] {
+	width: 18.5rem;
 }
 .w-64 {
 	width: 16rem;
@@ -2110,6 +2113,9 @@ select {
 }
 .uppercase {
 	text-transform: uppercase;
+}
+.capitalize {
+	text-transform: capitalize;
 }
 .leading-5 {
 	line-height: 1.25rem;

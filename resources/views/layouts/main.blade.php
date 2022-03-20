@@ -21,6 +21,7 @@
       <!-- Desktop sidebar -->
       @if(session()->get('company_id') !== null)
             @include('layouts.includes.aside')
+            @include('layouts.includes.mobile-sidebar')
       @endisset
 
       <div class="flex flex-col flex-1 w-full">

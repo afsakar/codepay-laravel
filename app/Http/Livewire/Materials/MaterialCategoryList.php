@@ -107,9 +107,8 @@ class MaterialCategoryList extends Component
         $this->render();
     }
 
-    public function toggleSwitch($id)
+    public function toggleSwitch(MaterialCategory $material_category)
     {
-        $material_category = MaterialCategory::find($id);
         $material_category->status == "active" ? $material_category->status = "inactive" : $material_category->status = "active";
         $material_category->save();
         $this->notify('Material Category status updated successfully.');

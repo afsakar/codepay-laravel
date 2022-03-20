@@ -10,6 +10,7 @@ class CompanySelect extends Component
     public $companies;
     public $isDisabled = false;
     public $header = 'Select Company';
+    public $logo = null;
 
     public $selectedCompany = null;
 
@@ -33,6 +34,7 @@ class CompanySelect extends Component
     {
         if($this->selectedCompany != null) {
             $this->isDisabled = false;
+            $this->logo = Company::where('id', $this->selectedCompany)->first()->logo;
         } else {
             $this->isDisabled = true;
         }

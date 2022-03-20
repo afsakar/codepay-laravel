@@ -228,8 +228,8 @@
             </x-slot>
 
             <x-slot name="content">
-                <x-input.group inline for="due-at" :label="__('Due At')" :error="$errors->first('editing.due_at')">
-                    <x-input.date wire:model="editing.due_at" id="due-at" placeholder="MM/DD/YYYY" />
+                <x-input.group inline for="due_at" :label="__('Due At')" :error="$errors->first('editing.due_at')">
+                    <x-input.date wire:model.lazy="editing.due_at" id="due_at" placeholder="MM/DD/YYYY" />
                 </x-input.group>
 
                 <x-input.group inline for="accounts" :label="__('Account')"

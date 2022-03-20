@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToCreatedUser;
+use App\Http\Traits\BelongsToCurrency;
+use App\Http\Traits\BelongsToMaterialCategory;
+use App\Http\Traits\BelongsToTax;
+use App\Http\Traits\BelongsToUnit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToCreatedUser, BelongsToCurrency, BelongsToUnit, BelongsToTax, BelongsToMaterialCategory;
 
     const STATUS = [
         'active' => 'Active',
@@ -38,46 +43,21 @@ class Material extends Model
         ][$this->status];
     }
 
-    public function getCreatedUserAttribute()
-    {
-        return User::where('id', $this->created_by)->get() ?? null;
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(MaterialCategory::class, 'material_category_id');
-    }
-
-    public function tax()
-    {
-        return $this->belongsTo(Tax::class, 'tax_id');
-    }
-
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'unit_id');
-    }
-
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class, 'currency_id');
-    }
-
     public function getSalePriceWithCurrencyAttribute()
     {
-        if($this->currency->position == "after") {
-            return number_format($this->sale_price, 2) . " " . $this->currency->symbol;
+        if($this->currency()->first()->position == "after") {
+            return number_format($this->sale_price, 2) . " " . $this->currency()->first()->symbol;
         } else {
-            return $this->currency->symbol . " " . number_format($this->sale_price, 2);
+            return $this->currency()->first()->symbol . " " . number_format($this->sale_price, 2);
         }
     }
 
     public function getPurchasePriceWithCurrencyAttribute()
     {
-        if($this->currency->position == "after") {
-            return number_format($this->purchase_price, 2) . " " . $this->currency->symbol;
+        if($this->currency()->first()->position == "after") {
+            return number_format($this->purchase_price, 2) . " " . $this->currency()->first()->symbol;
         } else {
-            return $this->currency->symbol . " " . number_format($this->purchase_price, 2);
+            return $this->currency()->first()->symbol . " " . number_format($this->purchase_price, 2);
         }
     }
 }

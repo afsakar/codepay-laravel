@@ -57,6 +57,14 @@
                 <x-input.toggle id="id-2" label="Toggle Button" />
                 <br>
                 <br>
+                <div class="w-1/3">
+                    @php
+
+                    $options = [ '1' => 'Option 1', '2' => 'Option 2', '3' => 'Option 3' ];
+
+                    @endphp
+                    <x-input.demo id="demo" :list="$options" />
+                </div>
                 <br>
                 <br>
             </div>

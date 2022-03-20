@@ -1,5 +1,5 @@
 <div
-    class="rounded-md shadow-sm"
+    class="rounded-md"
     x-data="{
         value: @entangle($attributes->wire('model')),
         isFocused() { return document.activeElement !== this.$refs.trix },

@@ -10,7 +10,7 @@
     }
 @endphp
 
-<div class="mt-1 relative rounded-md shadow-sm">
+<div class="mt-1 relative rounded-md">
     <div class="absolute bg-gray-50 flex inset-y-0 items-center {{ $currencyClass }} p-3 pointer-events-none dark:bg-gray-900 dark:border-gray-600 dark:text-gray-400 border">
         <span class="text-gray-500 sm:text-sm sm:leading-5 font-bold">
             {{ $currency }}

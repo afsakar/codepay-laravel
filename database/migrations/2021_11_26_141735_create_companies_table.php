@@ -26,6 +26,7 @@ class CreateCompaniesTable extends Migration
             $table->string('tax_office')->nullable();
             $table->string('tax_number')->nullable()->unique();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }

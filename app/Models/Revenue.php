@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToAccount;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Revenue extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToAccount;
 
     const TYPES = [
         'formal' => 'Formal',
@@ -31,6 +32,10 @@ class Revenue extends Model
         'due_at',
     ];
 
+    protected $casts = [
+        'due_at' => 'date:m/d/Y',
+    ];
+
     protected $appends = [
         'income_category',
     ];
@@ -42,16 +47,18 @@ class Revenue extends Model
 
     public function getAmountWithTotalCurrencyAttribute()
     {
-        return $this->account->currency_status == "after"
-            ? number_format($this->amount, 2)." ".$this->account->currency->symbol
-            : $this->account->currency->symbol." ".number_format($this->amount, 2);
+        return $this->account()->first()->currency()->first()->status == "after"
+            ? number_format($this->amount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($this->amount, 2);
     }
 
     public function getSumAmountWithCurrencyAttribute()
     {
-        return $this->account->currency_status == "after"
-            ? number_format($this->where('customer_id', $this->customer_id)->sum('amount'), 2)." ".$this->account->currency->symbol
-            : $this->account->currency->symbol." ".number_format($this->where('customer_id', $this->customer_id)->sum('amount'), 2);
+        $sumCustomerAmount = $this->where('customer_id', $this->customer_id)->sum('amount');
+
+        return $this->account()->first()->currency()->first()->status == "after"
+            ? number_format($sumCustomerAmount, 2)." ".$this->account()->first()->currency()->first()->symbol
+            : $this->account()->first()->currency()->first()->symbol." ".number_format($sumCustomerAmount, 2);
     }
 
     public function getSumTimesWithExchangeRateAttribute()
@@ -62,12 +69,7 @@ class Revenue extends Model
         foreach ($revenues as $revenue) {
             $summer += $revenue->amount * $revenue->exchange_rate;
         }
-        return number_format($summer, 2).' TL';
-    }
-
-    public function account()
-    {
-        return $this->belongsTo(Account::class, 'account_id');
+        return number_format($summer, 2).' ₺';
     }
 
     public function category()

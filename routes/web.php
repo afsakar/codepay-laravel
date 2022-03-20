@@ -10,9 +10,11 @@ use App\Http\Livewire\Currencies\CurrencyList;
 use App\Http\Livewire\Materials\MaterialCategoryList;
 use App\Http\Livewire\Materials\MaterialList;
 use App\Http\Livewire\Materials\UnitList;
+use App\Http\Livewire\Sales\CreateInvoice;
 use App\Http\Livewire\Sales\CustomerList;
 use App\Http\Livewire\Roles\RoleList;
 use App\Http\Livewire\Purchases\ExpenseList;
+use App\Http\Livewire\Sales\InvoiceList;
 use App\Http\Livewire\Sales\RevenueList;
 use App\Http\Livewire\Purchases\SupplierList;
 use App\Http\Livewire\Taxes\TaxList;
@@ -68,6 +70,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::group(['prefix' => 'sales', 'middleware' => ['PermissionCheck:sales,read']], function (){
             Route::get('/customers', CustomerList::class)->middleware('PermissionCheck:customers,read')->name('customers');
             Route::get('/revenues', RevenueList::class)->middleware('PermissionCheck:revenues,read')->name('revenues');
+            Route::get('/invoices', InvoiceList::class)->middleware('PermissionCheck:invoices,read')->name('invoices');
+            Route::get('/invoice/{id}', CreateInvoice::class)->middleware('PermissionCheck:invoices,create')->name('create.invoice');
         });
 
         Route::group(['prefix' => 'purchases', 'middleware' => ['PermissionCheck:purchases,read']], function (){

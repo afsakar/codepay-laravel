@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Traits\BelongsToCurrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 class Account extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToCurrency;
 
     const STATUS = [
         'active' => 'Active',
@@ -36,9 +37,13 @@ class Account extends Model
 
     public function getBalanceWithCurrencyAttribute()
     {
-        return $this->currency_status == "after"
-            ? number_format($this->revenue->sum('amount') + $this->balance - $this->expense->sum('amount'), 2)." ".$this->currency->symbol
-            : $this->currency->symbol." ".number_format(($this->revenue->sum('amount') + $this->balance - $this->expense->sum('amount')), 2);
+        $currency = $this->currency()->first();
+        $expenseSum = $this->expense()->get()->sum('amount');
+        $revenueSum = $this->revenue()->get()->sum('amount');
+
+        return $currency->position == "after"
+            ? number_format($revenueSum + $this->balance - $expenseSum, 2)." ".$currency->symbol
+            : $currency->symbol." ".number_format(($revenueSum + $this->balance - $expenseSum), 2);
     }
 
     public function revenue()
@@ -49,11 +54,6 @@ class Account extends Model
     public function expense()
     {
         return $this->hasMany(Expense::class, 'account_id');
-    }
-
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class, 'currency_id');
     }
 
     public function account_type()

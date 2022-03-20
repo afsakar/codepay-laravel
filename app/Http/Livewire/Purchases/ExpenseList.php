@@ -170,9 +170,9 @@ class ExpenseList extends Component
     {
         $this->detail = $expense;
         $this->detailModal = true;
-        $this->supplier = $expense->supplier;
-        $this->account = $expense->account;
-        $this->category = $expense->category;
+        $this->supplier = $expense->supplier()->first();
+        $this->account = $expense->account()->first();
+        $this->category = $expense->category()->first();
         $this->amount = $expense->getAmountWithCurrencyAttribute();
     }
 
@@ -190,9 +190,9 @@ class ExpenseList extends Component
     public function changeAccount(Account $acc)
     {
         $this->acc = $acc;
-        $this->symbol = $acc->currency->symbol;
+        $this->symbol = $acc->currency()->first()->symbol;
         $this->currency_status = $acc->currency_status;
-        $this->editing->exchange_rate = in_array($this->acc->currency->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency->code)['selling'] : 1) : 1;
+        $this->editing->exchange_rate = in_array($this->acc->currency()->code, ['USD', 'EUR', 'GBP']) ? ($this->acc->currency_id != 1 ? currency_rates($this->acc->currency()->code)['selling'] : 1) : 1;
 
     }
 
