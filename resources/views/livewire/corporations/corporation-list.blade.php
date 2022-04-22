@@ -81,6 +81,7 @@
                         </x-table.column>
                         @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['type'] ?? null" wire:click="sortBy('type')">{{ __('Type') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['tax_number'] ?? null" wire:click="sortBy('tax_number')">{{ __('Tax Number') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['balance'] ?? null" wire:click="sortBy('balance')">{{ __('Balance') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
@@ -117,6 +118,9 @@
                         @endpermission
                         <x-table.cell>
                             {{ $corporation->name }}
+                        </x-table.cell>
+                        <x-table.cell>
+                            {{ __(App\Models\Corporation::TYPES[$corporation->type]) }}
                         </x-table.cell>
                         <x-table.cell>
                             {{ $corporation->tax_number != "" ? $corporation->tax_number : "-" }}

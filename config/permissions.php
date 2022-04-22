@@ -210,6 +210,17 @@ return [
                     'delete' => 'Delete'
                 ],
             ],
+            [
+                'title' => 'Bills',
+                'gate' => 'bills',
+                'description' => 'Bill Management',
+                'permissions' => [
+                    'create' => 'Create',
+                    'read' => 'Read',
+                    'update' => 'Update',
+                    'delete' => 'Delete'
+                ],
+            ],
         ]
     ],
     [

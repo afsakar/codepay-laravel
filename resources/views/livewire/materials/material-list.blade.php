@@ -92,10 +92,10 @@
                         @endpermission
                         <x-table.column multi-column sortable :direction="$sorts['sku'] ?? null" wire:click="sortBy('sku')">{{ __('SKU Code') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['name'] ?? null" wire:click="sortBy('name')">{{ __('Name') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['type'] ?? null" wire:click="sortBy('type')">{{ __('Type') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['unit_id'] ?? null" wire:click="sortBy('unit_id')">{{ __('Unit') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['material_category_id'] ?? null" wire:click="sortBy('material_category_id')">{{ __('Material Category') }}</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['sale_price'] ?? null" wire:click="sortBy('sale_price')">{{ __('Sale Price') }}</x-table.column>
-                        <x-table.column multi-column sortable :direction="$sorts['purchase_price'] ?? null" wire:click="sortBy('purchase_price')">{{ __('Purchase Price') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['price'] ?? null" wire:click="sortBy('price')">{{ __('Price') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         @if(auth()->user()->role->id == 1)
                         <x-table.column multi-column sortable :direction="$sorts['created_by'] ?? null" wire:click="sortBy('created_by')">{{ __('Created By') }}</x-table.column>
@@ -137,16 +137,16 @@
                             {{ $material->name }}
                         </x-table.cell>
                         <x-table.cell>
+                            {{ \App\Models\Material::TYPES[$material->type] }}
+                        </x-table.cell>
+                        <x-table.cell>
                             {{ $material->unit->name }}
                         </x-table.cell>
                         <x-table.cell>
                             {{ $material->category->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $material->sale_price_with_currency }}
-                        </x-table.cell>
-                        <x-table.cell>
-                            {{ $material->purchase_price_with_currency }}
+                            {{ $material->price_with_currency }}
                         </x-table.cell>
                         <x-table.cell>
                             <x-input.toggle wire:click="toggleSwitch({{$material->id}})" :active="$material->status == 'active'" />
@@ -211,13 +211,9 @@
                         <x-input.text wire:model.defer="editing.sku" id="sku" />
                     </x-input.group>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <x-input.group inline for="sale_price" :label="__('Sale Price')" :error="$errors->first('editing.sale_price')">
-                        <x-input.money wire:model.defer="editing.sale_price" id="sale_price" :currency="$symbol ?? '₺'" :position="$position" />
-                    </x-input.group>
-
-                    <x-input.group inline for="purchase_price" :label="__('Purchase Price')" :error="$errors->first('editing.purchase_price')">
-                        <x-input.money wire:model.defer="editing.purchase_price" id="purchase_price" :currency="$symbol ?? '₺'" :position="$position" />
+                <div class="grid grid-cols-1 gap-4">
+                    <x-input.group inline for="price" :label="__('Price')" :error="$errors->first('editing.price')">
+                        <x-input.money wire:model.defer="editing.price" id="price" :currency="$symbol ?? '₺'" :position="$position" />
                     </x-input.group>
                 </div>
 
@@ -266,8 +262,13 @@
                 </x-input.group>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <x-input.group inline for="type" :label="__('Type')" :error="$errors->first('editing.type')">
-                        <x-input.text wire:model.defer="editing.type" id="type" />
+                    <x-input.group inline for="type" :label="__('Type')">
+                        <x-input.select id="type" wire:model.defer="editing.type">
+                            <option value="" disabled>{{ __('Select Type...') }}</option>
+                            @foreach (App\Models\Material::TYPES as $key => $value)
+                                <option value="{{ $key }}">{{ __($value) }}</option>
+                            @endforeach
+                        </x-input.select>
                     </x-input.group>
 
                     <x-input.group inline for="filter-status" :label="__('Status')">

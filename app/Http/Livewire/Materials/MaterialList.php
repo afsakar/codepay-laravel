@@ -36,8 +36,7 @@ class MaterialList extends Component
     public $filters = [
         'search' => "",
         'status' => "",
-        'sale-price' => null,
-        'purchase-price' => null,
+        'price' => null,
         'material_category_id' => "",
     ];
 
@@ -46,8 +45,7 @@ class MaterialList extends Component
         return [
             'editing.name' => 'required|min:3|unique:materials,name,'.$this->editing->id,
             'editing.sku' => 'required|unique:materials,name,'.$this->editing->id,
-            'editing.sale_price' => 'required|numeric',
-            'editing.purchase_price' => 'required|numeric',
+            'editing.price' => 'required|numeric',
             'editing.quantity' => 'required|numeric',
             'editing.tax_id' => 'required',
             'editing.material_category_id' => 'required',
@@ -65,8 +63,7 @@ class MaterialList extends Component
         return [
             'editing.name' => __('Material Name'),
             'editing.sku' => __('SKU Code'),
-            'editing.sale_price' => __('Sale Price'),
-            'editing.purchase_price' => __('Purchase Price'),
+            'editing.price' => __('Sale Price'),
             'editing.quantity' => __('Quantity'),
             'editing.tax_id' => __('Tax'),
             'editing.material_category_id' => __('Material Category'),
@@ -193,8 +190,7 @@ class MaterialList extends Component
     {
         $query = Material::query()
             ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
-            ->when($this->filters['sale-price'], fn($query, $sale_price) => $query->where('sale_price', '>=', $sale_price))
-            ->when($this->filters['purchase-price'], fn($query, $purchase_price) => $query->where('purchase_price', '>=', $purchase_price))
+            ->when($this->filters['price'], fn($query, $price) => $query->where('price', '>=', $price))
             ->when($this->filters['material_category_id'], fn($query, $material_category_id) => $query->where('material_category_id', '>=', $material_category_id))
             ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('sku', 'like', '%'.$search.'%')

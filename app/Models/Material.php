@@ -19,11 +19,16 @@ class Material extends Model
         'inactive' => 'Inactive',
     ];
 
+    const TYPES = [
+        'service' => 'Service',
+        'procurement' => 'Procurement',
+        'service_procurement' => 'Service & Procurement',
+    ];
+
     protected $fillable = [
         'name',
         'sku',
-        'sale_price',
-        'purchase_price',
+        'price',
         'quantity',
         'tax_id',
         'material_category_id',
@@ -43,21 +48,12 @@ class Material extends Model
         ][$this->status];
     }
 
-    public function getSalePriceWithCurrencyAttribute()
+    public function getPriceWithCurrencyAttribute()
     {
         if($this->currency()->first()->position == "after") {
-            return number_format($this->sale_price, 2) . " " . $this->currency()->first()->symbol;
+            return number_format($this->price, 2) . " " . $this->currency()->first()->symbol;
         } else {
-            return $this->currency()->first()->symbol . " " . number_format($this->sale_price, 2);
-        }
-    }
-
-    public function getPurchasePriceWithCurrencyAttribute()
-    {
-        if($this->currency()->first()->position == "after") {
-            return number_format($this->purchase_price, 2) . " " . $this->currency()->first()->symbol;
-        } else {
-            return $this->currency()->first()->symbol . " " . number_format($this->purchase_price, 2);
+            return $this->currency()->first()->symbol . " " . number_format($this->price, 2);
         }
     }
 }

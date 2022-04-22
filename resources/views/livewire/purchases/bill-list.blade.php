@@ -1,12 +1,12 @@
 <div x-data="{ showFilters: false,  openFilters() { this.showFilters = ! this.showFilters } }" class="w-full overflow-x-auto">
     <x-slot name="header">
-        {{__('Invoice List')}}
+        {{__('Bill List')}}
     </x-slot>
 
     {{-- Header --}}
     <h4 class="flex items-center justify-between my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200" >
         <div class="flex items-center justify-between">
-            {{__('Invoice List')}}
+            {{__('Bill List')}}
             <x-button x-on:click="openFilters" wire:click="toggleFilters" class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 dark:text-gray-400 border border-transparent rounded-lg focus:outline-none">
                 <template x-if="showFilters">
                     <span class="flex items-center justify-between"><x-heroicon-o-chevron-up class="h-5 w-5 mr-1" /> {{ __("Close Filters") }}</span>
@@ -20,13 +20,13 @@
         {{-- Bulk Actions --}}
         <div class="flex items-center justify-between">
             @empty(!$selected)
-                @permission('invoices.delete')
+                @permission('bills.delete')
                 <x-button wire:click="$set('deleteModal', true)" class="flex items-center justify-between px-3 py-1 text-sm font-medium leading-5 text-red-600 bg-red-100 border border-transparent rounded-lg focus:outline-none">
                     <span class="flex items-center justify-between"><x-heroicon-o-trash class="h-5 w-5 mr-1" /> {{ __("Delete") }}</span>
                 </x-button>
                 @endpermission
             @endempty
-            @permission('invoices.create')
+            @permission('bills.create')
             <x-button wire:click="create" class="flex items-center justify-between px-3 py-1 m-2 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none bg-gray-700 active:bg-gray-600 hover:bg-gray-800">
                 <x-heroicon-o-plus class="h-5 w-5 mr-1" /> <span>{{ __('New') }}</span>
             </x-button>
@@ -50,7 +50,7 @@
                             <x-input.group inline for="filter-status" label="Status">
                                 <x-input.select id="filter-status" wire:model="filters.status">
                                     <option value="" disabled>{{ __('Select Status...') }}</option>
-                                    @foreach (App\Models\Invoice::STATUS as $key => $value)
+                                    @foreach (App\Models\Bill::STATUS as $key => $value)
                                         <option value="{{ $key }}">{{ __($value) }}</option>
                                     @endforeach
                                 </x-input.select>
@@ -68,7 +68,7 @@
         <x-card>
             {{-- Search Area --}}
             <div class="grid grid-cols-2 gap-4 py-4 dark:text-gray-400 dark:bg-gray-800">
-                <x-input.text wire:model="filters.search" placeholder="Search Invoice..."  />
+                <x-input.text wire:model="filters.search" placeholder="Search Bill..."  />
 
                 <div class="flex justify-end">
                     <x-input.select wire:model="perPage" id="perPage">
@@ -83,12 +83,12 @@
             <x-table>
                 <x-slot name="head">
                     <x-table.row class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase dark:border-gray-400 bg-gray-50 dark:text-gray-400 dark:bg-gray-700">
-                        @permission('invoices.delete')
+                        @permission('bills.delete')
                         <x-table.column class="pr-0 w-8">
                             <x-input.checkbox wire:model="selectPage" />
                         </x-table.column>
                         @endpermission
-                        <x-table.column multi-column sortable :direction="$sorts['invoice_number'] ?? null" wire:click="sortBy('invoice_number')">{{ __('Invoice Number') }}</x-table.column>
+                        <x-table.column multi-column sortable :direction="$sorts['bill_number'] ?? null" wire:click="sortBy('bill_number')">{{ __('Bill Number') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['corporation_id'] ?? null" wire:click="sortBy('corporation_id')">{{ __('Customer') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['status'] ?? null" wire:click="sortBy('status')">{{ __('Status') }}</x-table.column>
                         <x-table.column multi-column sortable :direction="$sorts['issue_date'] ?? null" wire:click="sortBy('issue_date')">{{ __('Issue Date') }}</x-table.column>
@@ -98,7 +98,7 @@
                         <x-table.column>{{ __('Total Withholding') }}</x-table.column>
                         <x-table.column>{{ __('Discount') }}</x-table.column>
                         <x-table.column>{{ __('Total') }}</x-table.column>
-                        @permission('invoices.update')
+                        @permission('bills.update')
                         <x-table.column>{{ __('Actions') }}</x-table.column>
                         @endpermission
                     </x-table.row>
@@ -109,66 +109,66 @@
                             @unless ($selectAll)
                                 <div>
                                 <span>
-                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $invoices->count(), 'totalCount' => $invoices->total()]) !!}
+                                    {!! __('You have selected <strong>:selectedCount</strong> items. Do you want to select all <strong>:totalCount</strong> items?', ['selectedCount' => $bills->count(), 'totalCount' => $bills->total()]) !!}
                                 </span>
                                     <button wire:click="selectAll" class="text-blue-600 ml-1">{{ __('Select All') }}</button>
                                 </div>
                             @else
                                 <span>
-                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $invoices->total()]) !!}
+                            {!! __('You are currently selecting all <strong>:totalCount</strong> items.', ['totalCount' => $bills->total()]) !!}
                         </span>
                             @endif
                         </x-table.cell>
                     </x-table.row>
                 @endif
-                @forelse ($invoices as $invoice)
-                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $invoice->id }}">
-                        @permission('invoices.delete')
+                @forelse ($bills as $bill)
+                    <x-table.row wire:loading.class="opacity-80" class="text-gray-600 dark:text-gray-400 dark:bg-gray-700" wire:key="row-{{ $bill->id }}">
+                        @permission('bills.delete')
                         <x-table.cell class="pr-0">
-                            <x-input.checkbox wire:model="selected" value="{{ $invoice->id }}" />
+                            <x-input.checkbox wire:model="selected" value="{{ $bill->id }}" />
                         </x-table.cell>
                         @endpermission
                         <x-table.cell>
-                            {{ $invoice->invoice_number }}
+                            {{ $bill->bill_number }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $invoice->corporation->name }}
+                            {{ $bill->corporation->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$invoice->status_color">
-                                {{ __(App\Models\Invoice::STATUS[$invoice->status]) }}
+                            <x-badge :color="$bill->status_color">
+                                {{ __(App\Models\Bill::STATUS[$bill->status]) }}
                             </x-badge>
                         </x-table.cell>
                         <x-table.cell>
-                            {{ dateFormat($invoice->issue_date) }}
+                            {{ dateFormat($bill->issue_date) }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $invoice->withholding->name }}
+                            {{ $bill->withholding->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            {{ number_format($invoice->totalAmountWithOutTax, 2) }} ₺
+                            {{ number_format($bill->totalAmountWithOutTax, 2) }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ number_format($invoice->totalTax, 2) }} ₺
+                            {{ number_format($bill->totalTax, 2) }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ number_format($invoice->totalWithholding, 2) }} ₺
+                            {{ number_format($bill->totalWithholding, 2) }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ number_format($invoice->discount, 2) }} ₺
+                            {{ number_format($bill->discount, 2) }} ₺
                         </x-table.cell>
                         <x-table.cell>
-                            {{ number_format($invoice->totalAmount, 2) }} ₺
+                            {{ number_format($bill->totalAmount, 2) }} ₺
                         </x-table.cell>
                         <x-table.cell>
                             <div class="flex items-center space-x-4 text-sm">
-                                @permission('invoices.update')
-                                    <x-button wire:click="edit({{ $invoice->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
+                                @permission('bills.update')
+                                    <x-button wire:click="edit({{ $bill->id }})" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                         <x-heroicon-o-pencil class="h-5 w-5" />
                                     </x-button>
                                 @endpermission
-                                @permission('invoices.create')
-                                    <x-button.link :url="route('create.invoice', $invoice->id)" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
+                                @permission('bills.create')
+                                    <x-button.link :url="route('create.bill', $bill->id)" aria-label="Edit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 rounded-lg focus:outline-none focus:shadow-outline-gray text-gray-600 dark:text-gray-400">
                                         <x-heroicon-o-collection class="h-5 w-5" />
                                     </x-button.link>
                                 @endpermission
@@ -183,7 +183,7 @@
                     </x-table.cell>
                 @endforelse
             </x-table>
-            {{ $invoices->links() }}
+            {{ $bills->links() }}
         </x-card>
     </div>
 
@@ -192,15 +192,15 @@
         <x-jet-dialog-modal wire:model.defer="editingModal" maxWidth="2xl">
             <x-slot name="title">
                 @if(!$createMode)
-                    {{ __('Editing Invoice') }}
+                    {{ __('Editing Bill') }}
                 @else
-                    {{ __('Create Invoice') }}
+                    {{ __('Create Bill') }}
                 @endif
             </x-slot>
 
             <x-slot name="content">
-                <x-input.group inline for="invoice_number" :label="__('Invoice Number')" :error="$errors->first('editing.invoice_number')">
-                    <x-input.text wire:model.defer="editing.invoice_number" id="invoice_number" />
+                <x-input.group inline for="bill_number" :label="__('Bill Number')" :error="$errors->first('editing.bill_number')">
+                    <x-input.text wire:model.defer="editing.bill_number" id="bill_number" />
                 </x-input.group>
                 <div class="grid grid-cols-2 gap-4">
                     <x-input.group inline for="corporation_id" :label="__('Customer')" :error="$errors->first('editing.corporation_id')">
@@ -226,7 +226,7 @@
                 <x-input.group inline for="status" :label="__('Status')">
                     <x-input.select id="status" wire:model.defer="editing.status">
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-                        @foreach (App\Models\Invoice::STATUS as $key => $value)
+                        @foreach (App\Models\Bill::STATUS as $key => $value)
                             <option value="{{ $key }}">{{ __($value) }}</option>
                         @endforeach
                     </x-input.select>

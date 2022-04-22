@@ -11,6 +11,8 @@ use App\Http\Livewire\Materials\MaterialCategoryList;
 use App\Http\Livewire\Materials\MaterialList;
 use App\Http\Livewire\Materials\UnitList;
 use App\Http\Livewire\Corporations\CorporationList;
+use App\Http\Livewire\Purchases\BillList;
+use App\Http\Livewire\Purchases\CreateBill;
 use App\Http\Livewire\Sales\CreateInvoice;
 use App\Http\Livewire\Roles\RoleList;
 use App\Http\Livewire\Purchases\ExpenseList;
@@ -74,6 +76,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
         Route::group(['prefix' => 'purchases', 'middleware' => ['PermissionCheck:purchases,read']], function (){
             Route::get('/expenses', ExpenseList::class)->middleware('PermissionCheck:expenses,read')->name('expenses');
+            Route::get('/bills', BillList::class)->middleware('PermissionCheck:bills,read')->name('bills');
+            Route::get('/bill/{id}', CreateBill::class)->middleware('PermissionCheck:bills,create')->name('create.bill');
         });
 
         Route::group(['prefix' => 'banks', 'middleware' => ['PermissionCheck:banks,read']], function (){

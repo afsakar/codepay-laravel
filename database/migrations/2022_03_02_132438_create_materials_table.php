@@ -17,14 +17,13 @@ class CreateMaterialsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('sku');
-            $table->decimal('sale_price', 20)->default(0);
-            $table->decimal('purchase_price', 20)->default(0);
+            $table->decimal('price', 20)->default(0);
             $table->integer('quantity')->default(1);
             $table->unsignedBigInteger('tax_id')->default(0);
             $table->unsignedBigInteger('material_category_id')->default(0);
             $table->unsignedBigInteger('unit_id')->default(0);
             $table->unsignedBigInteger('currency_id')->default(1);
-            $table->string('type')->nullable();
+            $table->enum('type', ['service', 'procurement', 'service_procurement'])->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
             $table->integer('created_by')->default(0);
