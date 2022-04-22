@@ -127,9 +127,7 @@
                             {{ $type->name }}
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$type->status_color">
-                                {{ __(App\Models\AccountType::STATUS[$type->status]) }}
-                            </x-badge>
+                            <x-input.toggle wire:click="toggleSwitch({{$type->id}})" :active="$type->status == 'active'" />
                         </x-table.cell>
                         <x-table.cell title="{{ $type->created_at }}">
                             {{ $type->created_at->diffForHumans() }}

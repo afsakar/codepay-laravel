@@ -126,6 +126,13 @@ class CorporationList extends Component
     }
     /* Editing / Creating / Deleting / Exporting */
 
+    public function toggleSwitch(Corporation $val)
+    {
+        $val->status == "active" ? $val->status = "inactive" : $val->status = "active";
+        $val->save();
+        $this->notify('Corporation status updated successfully.');
+    }
+
     public function toggleFilters()
     {
         $this->useCachedRows();

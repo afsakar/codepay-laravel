@@ -107,6 +107,13 @@ class AccountTypeList extends Component
 
     /* Editing / Creating / Deleting / Exporting */
 
+    public function toggleSwitch(AccountType $val)
+    {
+        $val->status == "active" ? $val->status = "inactive" : $val->status = "active";
+        $val->save();
+        $this->notify('Account Type status updated successfully.');
+    }
+
     public function toggleFilters()
     {
         $this->useCachedRows();

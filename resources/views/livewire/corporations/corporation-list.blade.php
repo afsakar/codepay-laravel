@@ -133,9 +133,7 @@
                             @endif
                         </x-table.cell>
                         <x-table.cell>
-                            <x-badge :color="$corporation->status_color">
-                                {{ __(App\Models\Corporation::STATUS[$corporation->status]) }}
-                            </x-badge>
+                            <x-input.toggle wire:click="toggleSwitch({{$corporation->id}})" :active="$corporation->status == 'active'" />
                         </x-table.cell>
                         <x-table.cell title="{{ $corporation->created_at }}">
                             {{ $corporation->created_at->diffForHumans() }}
