@@ -29,6 +29,7 @@ class AccountList extends Component
     public $singleDelete = false;
     public $editingModal = false;
     public $currencyPosition = "after";
+    public $currencySymbol = "₺";
 
     protected $listeners = [
         'save',
@@ -91,7 +92,8 @@ class AccountList extends Component
         $this->useCachedRows();
         if($this->editing->isNot($account)) $this->editing = $account;
         $this->editingModal = true;
-        $this->currencyPosition = $this->editing['currency_status'];
+        $this->currencyPosition = $this->editing['currency']['position'];
+        $this->currencySymbol = $this->editing['currency']['symbol'];
     }
 
     public function create()
@@ -147,9 +149,10 @@ class AccountList extends Component
         $this->selected = [];
     }
 
-    public function changeCurrencyPosition($currency)
+    public function changeCurrency(Currency $currency)
     {
-        $this->currencyPosition = $currency;
+        $this->currencyPosition = $currency['position'];
+        $this->currencySymbol = $currency['symbol'];
     }
 
     public function toggleSwitch(Account $account)

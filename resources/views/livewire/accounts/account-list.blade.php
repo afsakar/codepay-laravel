@@ -80,7 +80,7 @@
         <x-card>
             {{-- Search Area --}}
             <div class="grid grid-cols-2 gap-4 py-4 dark:text-gray-400 dark:bg-gray-800">
-                <x-input.text wire:model="filters.search" placeholder="Search Accounts..."  />
+                <x-input.text wire:model.debounce.500ms="filters.search" placeholder="Search Accounts..."  />
 
                 <div class="flex justify-end">
                     <x-input.select wire:model="perPage" id="perPage">
@@ -218,20 +218,14 @@
                     </x-input.select>
                 </x-input.group>
                 <x-input.group inline for="currency" :label="__('Account Currency')" :error="$errors->first('editing.currency')">
-                    <x-input.select id="currency" wire:model.defer="editing.currency_id">
+                    <x-input.select id="currency" wire:model.defer="editing.currency_id" wire:click="changeCurrency($event.target.value)">
                         @foreach ($this->currencies as $currency)
                             <option value="{{ $currency->id }}">{{ __($currency->name)." [".$currency->symbol."]" }}</option>
                         @endforeach
                     </x-input.select>
                 </x-input.group>
-                <x-input.group inline for="currency-status" :label="__('Currency Status')">
-                    <x-input.select wire:click="changeCurrencyPosition($event.target.value)" id="currency-status" wire:model.defer="editing.currency_status">
-                        <option value="after">{{ __('After') }}</option>
-                        <option value="before">{{ __('Before') }}</option>
-                    </x-input.select>
-                </x-input.group>
                 <x-input.group inline for="balance" :label="__('Account Balance')" :error="$errors->first('editing.balance')">
-                    <x-input.money wire:model.defer="editing.balance" id="balance" :currency="$editing['currency']['symbol']" :position="$currencyPosition" />
+                    <x-input.money wire:model.defer="editing.balance" id="balance" :currency="$currencySymbol" :position="$currencyPosition" />
                 </x-input.group>
             </x-slot>
 
